@@ -1,0 +1,43 @@
+{
+	"name": "kuriousagency/commerce-order-notes",
+	"description": "Add notes to an order, they can also affect price.",
+	"type": "craft-plugin",
+	"version": "1.0.0",
+	"keywords": [
+		"craft",
+		"cms",
+		"craftcms",
+		"craft-plugin",
+		"commerce order notes"
+	],
+	"support": {
+		"docs": "https://github.com/KuriousAgency/commerce-order-notes/commerce-order-notes/blob/master/README.md",
+		"issues": "https://github.com/KuriousAgency/commerce-order-notes/commerce-order-notes/issues"
+	},
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "Kurious Agency",
+			"homepage": "https://kurious.agency"
+		}
+	],
+	"require": {
+		"craftcms/cms": "^3.0.0-RC1"
+	},
+	"autoload": {
+		"psr-4": {
+			"kuriousagency\\commerce\\ordernotes\\": "src/"
+		}
+	},
+	"extra": {
+		"name": "Commerce Order Notes",
+		"handle": "order-notes",
+		"hasCpSettings": false,
+		"hasCpSection": false,
+		"changelogUrl": "https://raw.githubusercontent.com/KuriousAgency/commerce-order-notes/commerce-order-notes/master/CHANGELOG.md",
+		"components": {
+			"notes": "kuriousagency\\commerce\\ordernotes\\services\\Notes"
+		},
+		"class": "kuriousagency\\commerce\\ordernotes\\OrderNotes"
+	}
+}

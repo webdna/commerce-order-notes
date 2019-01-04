@@ -1,0 +1,72 @@
+
+<div id="notesTab" class="pane hidden">
+    <h3>{{ "Notes"|t('commerce') }}</h3>
+
+		<p id="nonotes"{% if notes|length %} class="hidden"{% endif %}>
+			{{ "No notes exist yet."|t }}
+		</p>
+		{% if notes|length %}
+        <table id="notes" class="data fullwidth collapsible">
+            <thead>
+            <tr>
+				<th scope="col">{{ 'Date'|t('commerce') }}</th>
+                <th scope="col">{{ 'Comment'|t('commerce') }}</th>
+                <th scope="col">{{ 'Type'|t('commerce') }}</th>
+				<th scope="col">{{ 'Amount'|t('commerce') }}</th>
+                <th scope="col">{{ 'User'|t('commerce') }}</th>
+                <th class="thin"></th>
+            </tr>
+            </thead>
+            <tbody>
+                {% for note in notes %}
+                    <tr data-id="{{ note.id }}" data-name="{{ 'Note of {date}'|t({ date: note.dateCreated|date('d-m-Y') }) }}">
+						<th scope="row" data-title="{{ 'Date'|t }}">{{ note.dateCreated|date('d-m-Y H:i:s') }}</th>
+						<td data-title="{{ 'Comments'|t }}" width="65%">{{ note.comments|nl2br }}</td>
+						<td data-title="{{ 'Type'|t }}">{{ note.type }}</td>
+						<td data-title="{{ 'Value'|t }}">{{ note.value }}</td>
+						<td data-title="{{ 'User'|t }}">{{ note.user.fullname }}</td>
+						<td class="thin">
+						{% if currentUser.admin %}
+							<a class="delete icon" title="{{ 'Delete'|t }}" role="button"></a>
+						{% endif %}
+						</td>
+					</tr>
+                {% endfor %}
+                </tbody>
+        </table>
+		{% endif %}
+
+    
+        <div class="footer">
+            <a class="btn submit" id="new-note" data-order-id="{{ order.id }}">New Note</a>
+        </div>
+    
+
+</div>
+
+{% js %}
+    $(document).ready(function () {
+
+		new Craft.AdminTable({
+			tableSelector: '#notes',
+			noObjectsSelector: '#nonotes',
+			deleteAction: 'ordernotes/notes/delete',
+			onDeleteObject: function(){
+				document.location.reload();
+			}
+		});
+
+		var lineItems = [
+	    {% for item in order.lineItems %}
+	    	{id:{{ item.id }}, name:'{{ item.purchasable.description }}', qty:{{ item.qty }}},
+	    {% endfor %}
+        ];
+
+        new Craft.Commerce.OrderNotes({
+            orderId: {{ order.id }},
+            types: {{ noteTypes|json_encode|raw }},
+			lineItems: lineItems
+        });
+
+    });
+{% endjs %}
