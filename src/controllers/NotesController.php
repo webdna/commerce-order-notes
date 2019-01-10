@@ -11,9 +11,12 @@
 namespace kuriousagency\commerce\ordernotes\controllers;
 
 use kuriousagency\commerce\ordernotes\OrderNotes;
+use kuriousagency\commerce\ordernotes\models\Note as NoteModel;
+use kuriousagency\commerce\ordernotes\models\Manual as ManualModel;
 
 use Craft;
 use craft\web\Controller;
+use craft\commerce\Plugin as Commerce;
 
 /**
  * @author    Kurious Agency
@@ -39,27 +42,74 @@ class NotesController extends Controller
 	public function actionSave()
 	{
 		$this->requirePostRequest();
-		$this->requireAjaxRequest();
+		$this->requireAcceptsJson();
+
+		$request = Craft::$app->getRequest();
+
+		$type = $request->getParam('type');
+		$orderId = $request->getParam('orderId');
+		$userId = Craft::$app->getUser()->getIdentity()->id;
+		$comments = $request->getParam('comments');
+		$value = $request->getParam('value', 0);
+		$data = $request->getParam('data');
+
+		$class = "kuriousagency\\commerce\\ordernotes\\models\\".ucfirst($type);
+		$model = new $class();
+
+		$model->type = $type;
+		$model->orderId = $orderId;
+		$model->userId = $userId;
+		$model->comments = $comments;
+		$model->value = $value;
+		$model->data = $data;
+//Craft::dd($model);
 		
-		//create new note model
+		$model->validate();
 
-		//depending on type:
+		//Craft::dump($model->getErrors());
 
-		//- manual discount
+		/*if ($model->hasErrors()) {
+			return $this->asJson([
+				'errors' => $model->getErrors(),
+			]);
+		}*/
 
-		//- discount code
+		if (!OrderNotes::$plugin->notes->saveNote($model)) {
+			//Craft::dd($model->getErrors());
+			return $this->asJson([
+				'errors' => $model->getErrors(),
+			]);
+		}
 
-		//- add product
-		//- qty adjustment
+		$this->_updateOrder($orderId);
 
-		//- standard
-
-
-		//save it
+		return $this->asJson(['success'=>true]);
 	}
 
 	public function actionDelete()
 	{
-		//delete note and undo any changes it made.
+		$this->requirePostRequest();
+		$this->requireAcceptsJson();
+		
+		$id = Craft::$app->getRequest()->getRequiredBodyParam('id');
+
+		if ($id) {
+			$note = OrderNotes::$plugin->notes->getNoteById($id);
+			OrderNotes::$plugin->notes->deleteNoteById($id);
+			$this->_updateOrder($note->orderId);
+			return $this->asJson(['success' => true]);
+		}
+
+		return $this->asErrorJson("There was an error deleting the note.");
+	}
+
+	
+
+	private function _updateOrder($orderId)
+	{
+		$order = Commerce::getInstance()->getOrders()->getOrderById($orderId);
+		$order->isCompleted = false;
+		Craft::$app->getElements()->saveElement($order, false);
+		$order->markAsComplete();
 	}
 }

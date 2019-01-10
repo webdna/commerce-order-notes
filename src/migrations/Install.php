@@ -108,7 +108,7 @@ class Install extends Migration
             ),
             '{{%commerce_ordernotes}}',
             'orderId',
-            true
+            false
 		);
 		$this->createIndex(
             $this->db->getIndexName(
@@ -118,7 +118,7 @@ class Install extends Migration
             ),
             '{{%commerce_ordernotes}}',
             'userId',
-            true
+            false
 		);
         // Additional commands depending on the db driver
         switch ($this->driver) {

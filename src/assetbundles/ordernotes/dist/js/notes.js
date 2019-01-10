@@ -52,9 +52,10 @@ Craft.Commerce.OrderNoteModal = Garnish.Modal.extend({
 	$statusSelect: null,
 	$selectedStatus: null,
 	$orderStatusIdInput: null,
+	$list: null,
 	$message: null,
 	$error: null,
-	$updateBtn: null,
+	$saveBtn: null,
 	$statusMenuBtn: null,
 	$cancelBtn: null,
 	init: function(settings) {
@@ -66,29 +67,29 @@ Craft.Commerce.OrderNoteModal = Garnish.Modal.extend({
 
 		var self = this;
 
-		var $form = $('<form class="modal fitted" method="post" accept-charset="UTF-8"/>').appendTo(Garnish.$bod);
+		var $form = $('<form class="modal fitted order-notes" method="post" accept-charset="UTF-8"/>').appendTo(Garnish.$bod);
 		var $body = $('<div class="body"></div>').appendTo($form);
 		this.$inputs = $('<div class="content">' + '<h2 class="first">' + Craft.t('commerce', 'Order Note') + '</h2>' + '</div>').appendTo($body);
 
 		// Build menu button
 		this.$statusSelect = $('<a class="btn menubtn" href="#">Choose type...</a>').appendTo(this.$inputs);
 		var $menu = $('<div class="menu"/>').appendTo(this.$inputs);
-		var $list = $('<ul class="padded"/>').appendTo($menu);
+		this.$list = $('<ul class="padded"/>').appendTo($menu);
 		var classes = '';
 		// for (var i = 0; i < this.settings.noteTypes.length; i++) {
 		// 		classes = '';
 		// 	$('<li><a data-id="' + this.settings.noteTypes[i].id + '" data-color="' + orderStatuses[i].color + '" data-name="' + orderStatuses[i].name + '" class="' + classes + '"><span class="status ' + orderStatuses[i].color + '"></span>' + orderStatuses[i].name + '</a></li>').appendTo($list);
 		// }
 		$.each(this.settings.types, function(key, value) {
-			$('<li><a data-id="' + key + '" data-name="' + value + '">' + value + '</a></li>').appendTo($list);
+			$('<li><a data-id="' + key + '" data-name="' + value + '">' + value + '</a></li>').appendTo(self.$list);
 		});
 
-		this.$selectedStatus = $('.sel', $list);
+		this.$selectedStatus = $('.sel', this.$list);
 
 		// Build message input
-		this.$comment = $('<div class="field">' + '<div class="heading">' + '<label>' + Craft.t('commerce', 'Comment') + '</label>' + '<div class="instructions"><p>' + Craft.t('commerce', 'The reason for the note') + '.</p>' + '</div>' + '</div>' + '<div class="input ltr">' + '<textarea class="text fullwidth" rows="2" cols="50" name="comment"></textarea>' + '</div>' + '</div>').appendTo(this.$inputs);
-		this.$amount = $('<div class="field">' + '<div class="heading">' + '<label>' + Craft.t('commerce', 'Amount') + '</label>' + '<div class="instructions"><p>' + Craft.t('commerce', 'The amount to add to the order, can be negative!') + '.</p>' + '</div>' + '</div>' + '<div class="input ltr">' + '<input type="text" class="text fullwidth" name="amount">' + '</div>' + '</div>');
-		this.$code = $('<div class="field">' + '<div class="heading">' + '<label>' + Craft.t('commerce', 'Coupon Code') + '</label>' + '<div class="instructions"><p>' + Craft.t('commerce', 'The coupon code to add to the order') + '.</p>' + '</div>' + '</div>' + '<div class="input ltr">' + '<input type="text" class="text fullwidth" name="coupon">' + '</div>' + '</div>');
+		this.$comments = $('<div class="field">' + '<div class="heading">' + '<label class="required">' + Craft.t('commerce', 'Comments') + '</label>' + '<div class="instructions"><p>' + Craft.t('commerce', 'The reason for the note') + '.</p>' + '</div>' + '</div>' + '<div class="input ltr">' + '<textarea class="text fullwidth" rows="2" cols="50" name="comments"></textarea>' + '</div>' + '</div>').appendTo(this.$inputs);
+		this.$value = $('<div class="field">' + '<div class="heading">' + '<label class="required">' + Craft.t('commerce', 'Value') + '</label>' + '<div class="instructions"><p>' + Craft.t('commerce', 'The amount to discount from the order') + '.</p>' + '</div>' + '</div>' + '<div class="input ltr">' + '<input type="text" class="text fullwidth" name="value">' + '</div>' + '</div>');
+		this.$code = $('<div class="field">' + '<div class="heading">' + '<label class="required">' + Craft.t('commerce', 'Coupon Code') + '</label>' + '<div class="instructions"><p>' + Craft.t('commerce', 'The coupon code to add to the order') + '.</p>' + '</div>' + '</div>' + '<div class="input ltr">' + '<input type="text" class="text fullwidth" name="data[coupon]">' + '</div>' + '</div>');
 		this.$qty = $('<div class="field">' + '<div class="heading">' + '<label>' + Craft.t('commerce', 'Items') + '</label></div>' + '<div class="input ltr">' + '<table class="data fullwidth"><tbody></tbody></table>' + '</div>' + '</div>');
 		$.each(this.settings.lineItems, function() {
 			$('<tr><td>' + this.name + '</td><td><input class="text fullwidth" name="qty[' + this.id + ']" value="' + this.qty + '" /></td></tr>').appendTo(self.$qty.find('tbody'));
@@ -105,21 +106,28 @@ Craft.Commerce.OrderNoteModal = Garnish.Modal.extend({
 		var $footer = $('<div class="footer"/>').appendTo($form);
 		var $mainBtnGroup = $('<div class="btngroup right"/>').appendTo($footer);
 		this.$cancelBtn = $('<input type="button" class="btn" value="' + Craft.t('commerce', 'Cancel') + '"/>').appendTo($mainBtnGroup);
-		this.$updateBtn = $('<input type="button" class="btn submit" value="' + Craft.t('commerce', 'Update') + '"/>').appendTo($mainBtnGroup);
+		this.$saveBtn = $('<input type="button" class="btn submit" value="' + Craft.t('commerce', 'Save') + '"/>').appendTo($mainBtnGroup);
 
-		this.$updateBtn.addClass('disabled');
+		this.$saveBtn.addClass('disabled');
 
 		// Listeners and
+		this.addListener(this.$statusSelect, 'click', function(e) {
+			e.preventDefault();
+		});
 		this.$statusMenuBtn = new Garnish.MenuBtn(this.$statusSelect, {
 			onOptionSelect: $.proxy(this, 'onSelectStatus')
 		});
-		this.onSelectStatus($list.find('li:first-child a'));
+		this.onSelectStatus(this.$list.find('li:first-child a'));
 
-		this.addListener(this.$cancelBtn, 'click', 'hide');
-		this.addListener(this.$updateBtn, 'click', function(ev) {
+		this.addListener(this.$cancelBtn, 'click', function(e) {
+			e.preventDefault();
+			this.reset();
+			this.hide();
+		});
+		this.addListener(this.$saveBtn, 'click', function(ev) {
 			ev.preventDefault();
 			if (!$(ev.target).hasClass('disabled')) {
-				this.updateStatus();
+				this.save();
 			}
 		});
 		this.base($form, settings);
@@ -165,15 +173,15 @@ Craft.Commerce.OrderNoteModal = Garnish.Modal.extend({
 		var newHtml = '<span>' + Craft.uppercaseFirst($(status).data('name')) + '</span>';
 		this.$statusSelect.html(newHtml);
 
-		this.$updateBtn.removeClass('disabled');
+		this.$saveBtn.removeClass('disabled');
 
-		this.$amount.detach();
+		this.$value.detach();
 		this.$code.detach();
 		this.$qty.detach();
 		this.$products.detach();
 
 		if (type == 'manual') {
-			this.$amount.appendTo(this.$inputs);
+			this.$value.appendTo(this.$inputs);
 		}
 		if (type == 'code') {
 			this.$code.appendTo(this.$inputs);
@@ -194,15 +202,79 @@ Craft.Commerce.OrderNoteModal = Garnish.Modal.extend({
 		}
 	},
 
-	updateStatus: function() {
+	reset: function() {
+		//clear values
+		this.$comments.find('textarea[name="comments"]').val('');
+		this.$value.find('input[name="value"]').val('');
+		this.$code.find('input[name="data[coupon]"]').val('');
+		//clear any errors
+		this.clearErrors();
+		//set back to first note type
+		this.onSelectStatus(this.$list.find('li:first-child a'));
+	},
+
+	clearErrors: function() {
+		this.$inputs.find('.field.has-errors').each(function() {
+			var $this = $(this);
+			$this.removeClass('has-errors');
+			$this.find('ul.errors').remove();
+			$this.find('.input').removeClass('errors');
+		});
+	},
+
+	save: function() {
+		var self = this;
 		var data = {
-			orderStatusId: this.currentStatus.id,
-			message: this.$message.find('textarea[name="message"]').val(),
-			color: this.currentStatus.color,
-			name: this.currentStatus.name
+			comments: this.$comments.find('textarea[name="comments"]').val(),
+			type: this.$selectedStatus.data('id'),
+			orderId: this.settings.orderId,
+			data: {}
 		};
 
-		this.settings.onSubmit(data);
+		if (this.$value.is(':visible')) {
+			data['value'] = this.$value.find('input[name="value"]').val();
+		}
+		if (this.$code.is(':visible')) {
+			data.data['code'] = this.$code.find('input[name="data[coupon]"]').val();
+		}
+		/*
+		if (this.$manualDiscount.is(':visible')) {
+			data['amount'] = this.$manualDiscount.find('input[name="amount"]').val();
+		}
+		if (this.$discountCode.is(':visible')) {
+			data['code'] = this.$discountCode.find('input[name="code"]').val();
+		}
+		if (this.$qtyAdjustment.is(':visible')) {
+			data['qty'] = {};
+			this.$qtyAdjustment.find('input').each(function() {
+				data['qty'][this.name.replace('qty[', '').replace(']', '')] = this.value;
+			});
+			//data['qty'] = this.$qtyAdjustment.find('input[name="qty"]').val();
+		}
+		if (this.$addProduct.is(':visible')) {
+			data['variant'] = this.$addProduct.find('input[name="variant[]"]').val();
+			data['qty'] = this.$addProduct.find('input[name="qty"]').val();
+		}*/
+
+		Craft.postActionRequest('order-notes/notes/save', data, function(response) {
+			if (response.success) {
+				document.location.reload(true);
+			} else {
+				Craft.cp.displayError("Couldn't save note");
+				self.clearErrors();
+				$.each(response.errors, function(key) {
+					console.log(this, key);
+					var $field = self['$' + key];
+					$field.addClass('has-errors');
+					$field.find('.input').addClass('errors');
+					$field.append($('<ul class="errors"><li>' + this + '</li></ul>'));
+				});
+
+				self.updateSizeAndPosition();
+			}
+		});
+
+		//this.settings.onSubmit(data);
 	},
 	defaults: {
 		onSubmit: $.noop
