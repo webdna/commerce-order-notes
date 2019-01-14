@@ -12,9 +12,10 @@ namespace kuriousagency\commerce\ordernotes;
 
 use kuriousagency\commerce\ordernotes\services\Notes as OrderNotesService;
 use kuriousagency\commerce\ordernotes\assetbundles\ordernotes\OrderNotesAsset;
-use kuriousagency\commerce\ordernotes\models\Note as NoteModel;
+use kuriousagency\commerce\ordernotes\models\Refund as RefundModel;
 use kuriousagency\commerce\ordernotes\adjusters\Manual as ManualAdjuster;
 use kuriousagency\commerce\ordernotes\adjusters\Code as CodeAdjuster;
+use kuriousagency\commerce\ordernotes\adjusters\Refund as RefundAdjuster;
 
 use Craft;
 use craft\base\Plugin;
@@ -96,6 +97,7 @@ class OrderNotes extends Plugin
 		Event::on(OrderAdjustments::class, OrderAdjustments::EVENT_REGISTER_ORDER_ADJUSTERS, function(RegisterComponentTypesEvent $e) {
 			$e->types[] = ManualAdjuster::class;
 			$e->types[] = CodeAdjuster::class;
+			$e->types[] = RefundAdjuster::class;
 		});
 
         Event::on(
@@ -119,12 +121,13 @@ class OrderNotes extends Plugin
 			Event::on(Payments::class, Payments::EVENT_AFTER_REFUND_TRANSACTION, function(RefundTransactionEvent $event) {
 				//Craft::dd($event);
 				if ($event->transaction->status == 'success') {
-					$model = new NoteModel();
+					$model = new RefundModel();
 					$model->type = 'refund';
 					$model->orderId = $event->transaction->orderId;
 					$model->userId = Craft::$app->getUser()->getIdentity()->id;
 					$model->comments = Craft::$app->getRequest()->getParam('note');
 					$model->value = $event->amount;
+					$model->data = '';
 					//Craft::dd($model);
 					OrderNotes::$plugin->notes->saveNote($model);
 				}
@@ -169,7 +172,7 @@ class OrderNotes extends Plugin
         	return $view->renderTemplate('order-notes/notes', [
 				'order' => $context['order'],
 				'notes' => $this->notes->getNotesByOrderId($context['order']->id),
-				'noteTypes' => $this->notes->getTypes(),
+				'noteTypes' => $this->notes->getTypes($context['order']),
 			]);
 		});
 

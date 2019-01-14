@@ -51,7 +51,7 @@ class NotesController extends Controller
 		$userId = Craft::$app->getUser()->getIdentity()->id;
 		$comments = $request->getParam('comments');
 		$value = $request->getParam('value', 0);
-		$data = $request->getParam('data');
+		$data = $request->getParam('data', []);
 
 		$class = "kuriousagency\\commerce\\ordernotes\\models\\".ucfirst($type);
 		$model = new $class();
@@ -81,7 +81,9 @@ class NotesController extends Controller
 			]);
 		}
 
-		$this->_updateOrder($orderId);
+		$model->afterSave();
+//Craft::dd(count($model->order->lineItems));
+		$this->_updateOrder($model->order);
 
 		return $this->asJson(['success'=>true]);
 	}
@@ -96,7 +98,7 @@ class NotesController extends Controller
 		if ($id) {
 			$note = OrderNotes::$plugin->notes->getNoteById($id);
 			OrderNotes::$plugin->notes->deleteNoteById($id);
-			$this->_updateOrder($note->orderId);
+			$this->_updateOrder($note->order);
 			return $this->asJson(['success' => true]);
 		}
 
@@ -105,9 +107,10 @@ class NotesController extends Controller
 
 	
 
-	private function _updateOrder($orderId)
+	private function _updateOrder($order)
 	{
-		$order = Commerce::getInstance()->getOrders()->getOrderById($orderId);
+		//$order = Commerce::getInstance()->getOrders()->getOrderById($orderId);
+		//Craft::dd($order->lineItems);
 		$order->isCompleted = false;
 		Craft::$app->getElements()->saveElement($order, false);
 		$order->markAsComplete();

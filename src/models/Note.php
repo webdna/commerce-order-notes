@@ -42,6 +42,8 @@ class Note extends Model
 	public $dateUpdated;
 	public $uid;
 
+	private $_order;
+
     // Public Methods
 	// =========================================================================
 	
@@ -52,7 +54,11 @@ class Note extends Model
 
 	public function getOrder()
 	{
-		return Order::findOne($this->orderId);
+		if (!$this->_order) {
+			$this->_order = Order::findOne($this->orderId);
+		}
+
+		return $this->_order;
 	}
 
 	public function getTypeName()
@@ -67,6 +73,11 @@ class Note extends Model
 
 	public function getData()
 	{
+		if (is_array($this->data)) {
+			//Craft::dd((object) $this->data);
+			$this->data = json_encode($this->data);
+			//return (object) $this->data;
+		}
 		return json_decode($this->data);
 	}
 
@@ -90,6 +101,11 @@ class Note extends Model
 				$this->addError($key, ucfirst($key)." cannot be blank.");
 			}
 		}
+	}
+
+	public function afterSave()
+	{
+
 	}
 	
 

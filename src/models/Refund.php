@@ -30,6 +30,11 @@ class Refund extends Note
 
     // Public Methods
 	// =========================================================================
+
+	public function afterValidate()
+	{
+		
+	}
 	
 
     /**

@@ -13,6 +13,7 @@ namespace kuriousagency\commerce\ordernotes\services;
 use kuriousagency\commerce\ordernotes\OrderNotes;
 use kuriousagency\commerce\ordernotes\records\Note as NoteRecord;
 use kuriousagency\commerce\ordernotes\models\Note as NoteModel;
+use kuriousagency\commerce\ordernotes\models\Qty as QtyModel;
 
 use Craft;
 use craft\base\Component;
@@ -30,8 +31,8 @@ class Notes extends Component
 		'note' => 'General note',
 		'manual' => 'Manual Discount',
 		'code' => 'Discount Code',
-		/*'qty' => 'Quantity Adjustment',
-		'add' => 'Add Product',*/
+		'qty' => 'Quantity Adjustment',
+		'add' => 'Add Product',
 	];
 	
 	// Public Methods
@@ -116,7 +117,7 @@ class Notes extends Component
 		return $this->_types[$key];
 	}
 
-	public function getTypes()
+	public function getTypes($order = null)
 	{
 		$types = [];
 
@@ -126,7 +127,13 @@ class Notes extends Component
 				$types[$key] = $value;
 
 			} elseif (Craft::$app->user->checkPermission('ordernotes_type_'.$key)) {
-				$types[$key] = $value;
+				if ($key == 'manual' || $key == 'code') {
+					if (!$order || ($order && !$order->isPaid)) {
+						$types[$key] = $value;
+					}
+				} else {
+					$types[$key] = $value;
+				}
 			}
 		}
 		
