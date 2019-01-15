@@ -2,7 +2,7 @@
 	"name": "kuriousagency/commerce-order-notes",
 	"description": "Add notes to an order, they can also affect price.",
 	"type": "craft-plugin",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"keywords": [
 		"craft",
 		"cms",
@@ -31,7 +31,7 @@
 	},
 	"extra": {
 		"name": "Commerce Order Notes",
-		"handle": "order-notes",
+		"handle": "commerce-order-notes",
 		"hasCpSettings": false,
 		"hasCpSection": false,
 		"changelogUrl": "https://raw.githubusercontent.com/KuriousAgency/commerce-order-notes/commerce-order-notes/master/CHANGELOG.md",

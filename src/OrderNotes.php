@@ -169,7 +169,7 @@ class OrderNotes extends Plugin
 				'class' => null
 			];
 
-        	return $view->renderTemplate('order-notes/notes', [
+        	return $view->renderTemplate('commerce-order-notes/notes', [
 				'order' => $context['order'],
 				'notes' => $this->notes->getNotesByOrderId($context['order']->id),
 				'noteTypes' => $this->notes->getTypes($context['order']),
@@ -178,7 +178,7 @@ class OrderNotes extends Plugin
 
         Craft::info(
             Craft::t(
-                'order-notes',
+                'commerce-order-notes',
                 '{name} plugin loaded',
                 ['name' => $this->name]
             ),
