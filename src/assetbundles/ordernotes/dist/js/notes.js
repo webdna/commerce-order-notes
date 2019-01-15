@@ -280,7 +280,7 @@ Craft.Commerce.OrderNoteModal = Garnish.Modal.extend({
 		}
 		//console.log(data);
 
-		Craft.postActionRequest('order-notes/notes/save', data, function(response) {
+		Craft.postActionRequest('commerce-order-notes/notes/save', data, function(response) {
 			if (response.success) {
 				document.location.reload(true);
 			} else {
