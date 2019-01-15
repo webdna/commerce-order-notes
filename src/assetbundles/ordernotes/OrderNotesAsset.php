@@ -33,11 +33,11 @@ class OrderNotesAsset extends AssetBundle
         ];
 
         $this->js = [
-            'js/Notes.js',
+            'js/notes.js',
         ];
 
         $this->css = [
-            'css/Notes.css',
+            'css/notes.css',
         ];
 
         parent::init();
