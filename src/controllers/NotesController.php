@@ -111,8 +111,11 @@ class NotesController extends Controller
 	{
 		//$order = Commerce::getInstance()->getOrders()->getOrderById($orderId);
 		//Craft::dd($order->lineItems);
+		$orderComplete = $order->isCompleted;
 		$order->isCompleted = false;
 		Craft::$app->getElements()->saveElement($order, false);
-		$order->markAsComplete();
+		if ($orderComplete) {
+			$order->markAsComplete();
+		}
 	}
 }
