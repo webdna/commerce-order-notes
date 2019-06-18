@@ -59,7 +59,7 @@
 
 		var lineItems = [
 	    {% for item in order.lineItems %}
-	    	{id:{{ item.id }}, name:'{{ item.purchasable.description }}', qty:{{ item.qty }}},
+	    	{id:{{ item.id }}, name:'{{ item.description }}', qty:{{ item.qty }}},
 	    {% endfor %}
         ];
 
