@@ -114,8 +114,9 @@ class NotesController extends Controller
 		$orderComplete = $order->isCompleted;
 		$order->isCompleted = false;
 		Craft::$app->getElements()->saveElement($order, false);
-		if ($orderComplete) {
-			$order->markAsComplete();
+		if ($orderComplete != $order->isCompleted) {
+			$order->isCompleted = true;
+			Craft::$app->getElements()->saveElement($order, false);
 		}
 	}
 }

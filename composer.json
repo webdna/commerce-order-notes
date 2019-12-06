@@ -2,7 +2,7 @@
 	"name": "kuriousagency/commerce-order-notes",
 	"description": "Add notes to an order, they can also affect price.",
 	"type": "craft-plugin",
-	"version": "1.0.6",
+	"version": "1.0.7",
 	"keywords": [
 		"craft",
 		"cms",

@@ -59,9 +59,27 @@ class Notes extends Component
 		return $notes;
 	}
 
-	public function getNotes()
+	public function getNotes($conditions=[])
 	{
-	
+		$notes = [];
+		
+		$results = (new Query())
+			->select(['*'])
+			->from(['{{%commerce_ordernotes}}'])
+			->orderBy('dateUpdated DESC');
+		
+		foreach ($conditions as $condition) {
+			$results->andWhere($condition);
+		}
+
+		foreach ($results->all() as $result)
+		{
+			$class = "kuriousagency\\commerce\\ordernotes\\models\\".ucfirst($result['type']);
+			$model = new $class();
+			$notes[] = new $model($result);
+		}
+		
+		return $notes;
 	}
 
 	public function getNoteById($id)

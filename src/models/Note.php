@@ -49,7 +49,7 @@ class Note extends Model
 	
 	public function getUser()
 	{
-		return User::findOne($this->userId);
+		return User::find()->anyStatus()->id($this->userId)->one();
 	}
 
 	public function getOrder()
