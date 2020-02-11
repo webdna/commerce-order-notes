@@ -29,7 +29,16 @@ class Code extends Note
 
     // Public Methods
 	// =========================================================================
+	public function getName()
+	{
+		return 'Discount Code';
+	}
 	
+	public function getProperties()
+	{
+		// available: comments, value, qty, code, email, add
+		return ['comments', 'code'];
+	}
 
 	public function getValue($currency=false)
 	{

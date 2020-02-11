@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 1.1.0 - 2020-01-11
+
+### Added
+
+-   Change email type
+-   afterDelete call on model types
+-   register note types event
+
 ## 1.0.7 - 2019-12-06
 
 ### Changed

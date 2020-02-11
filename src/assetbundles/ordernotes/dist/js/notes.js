@@ -82,7 +82,7 @@ Craft.Commerce.OrderNoteModal = Garnish.Modal.extend({
 		// 	$('<li><a data-id="' + this.settings.noteTypes[i].id + '" data-color="' + orderStatuses[i].color + '" data-name="' + orderStatuses[i].name + '" class="' + classes + '"><span class="status ' + orderStatuses[i].color + '"></span>' + orderStatuses[i].name + '</a></li>').appendTo($list);
 		// }
 		$.each(this.settings.types, function(key, value) {
-			$('<li><a data-id="' + key + '" data-name="' + value + '">' + value + '</a></li>').appendTo(self.$list);
+			$('<li><a data-id="' + value.type + '" data-name="' + value.name + '">' + value.name + '</a></li>').appendTo(self.$list);
 		});
 
 		this.$selectedStatus = $('.sel', this.$list);
@@ -93,12 +93,13 @@ Craft.Commerce.OrderNoteModal = Garnish.Modal.extend({
 		this.$code = $('<div class="field">' + '<div class="heading">' + '<label class="required">' + Craft.t('commerce', 'Coupon Code') + '</label>' + '<div class="instructions"><p>' + Craft.t('commerce', 'The coupon code to add to the order') + '.</p>' + '</div>' + '</div>' + '<div class="input ltr">' + '<input type="text" class="text fullwidth" name="code">' + '</div>' + '</div>');
 		this.$qty = $('<div class="field">' + '<div class="heading">' + '<label>' + Craft.t('commerce', 'Items') + '</label></div>' + '<div class="input ltr">' + '<table class="data fullwidth"><tbody></tbody></table>' + '</div>' + '</div>');
 		$.each(this.settings.lineItems, function() {
-			$('<tr><td>' + this.name + '</td><td><input type="number" class="text fullwidth" data-label="'+this.name+'" name="qty[' + this.id + ']" value="' + this.qty + '" data-value="' + this.qty + '" /></td></tr>').appendTo(self.$qty.find('tbody'));
+			$('<tr><td>' + this.name + '</td><td><input type="number" class="text fullwidth" data-label="' + this.name + '" name="qty[' + this.id + ']" value="' + this.qty + '" data-value="' + this.qty + '" /></td></tr>').appendTo(self.$qty.find('tbody'));
 		});
 		this.$products = $('<div class="field">' + '<div class="heading">' + '<label>' + Craft.t('Product') + '</label>' + '</div>' + '<div class="input ltr">' + '<table class="data fullwidth"><tbody><tr><td></td><td><input class="text fullwidth" name="qty" value="" placeholder="qty" required /></td></tr></tbody></table>' + '</div>' + '</div>');
 		this.$add = $('<div class="field hidden">' + '<div class="heading">' + '<label class="required">' + Craft.t('commerce', 'Product') + '</label>' + '<div class="instructions"><p>' + Craft.t('commerce', 'Select products to add to the order') + '.</p>' + '</div>' + '</div>' + '<div class="input ltr">' + '<div id="productPicker" class="elementselect">' + '<div class="elements">' + '</div>' + '<div class="btn add icon dashed">Choose</div>' + '</div>' + '</div>' + '</div>').appendTo(
 			this.$inputs
 		);
+		this.$email = $('<div class="field">' + '<div class="heading">' + '<label class="required">' + Craft.t('commerce', 'Email') + '</label>' + '<div class="instructions"><p>' + Craft.t('commerce', 'The customers email') + '.</p>' + '</div>' + '</div>' + '<div class="input ltr">' + '<input type="text" class="text fullwidth" name="email" value="' + this.settings.email + '">' + '</div>' + '</div>');
 
 		//<div id="{{ id }}" class="elementselect"><div class="elements"></div><div class="btn add icon dashed">Choose</div></div>
 
@@ -156,25 +157,23 @@ Craft.Commerce.OrderNoteModal = Garnish.Modal.extend({
 				$.each(e, function(i) {
 					console.log(this);
 
-					var $el = $('#productPicker .element[data-id="'+this.id+'"]');
-					var $qty = $el.find('input[name="qty['+this.id+']"]');
+					var $el = $('#productPicker .element[data-id="' + this.id + '"]');
+					var $qty = $el.find('input[name="qty[' + this.id + ']"]');
 					//console.log($el)
 					//console.log($qty)
 					if ($qty[0]) {
-						$qty.val(Number($qty.val())+1);
+						$qty.val(Number($qty.val()) + 1);
 					} else {
 						var $div = $('<div class="flex"></div>').appendTo($el);
-							$div.append($el.find('.status'));
-							$div.append($el.find('.label'));
-							$div.append($('<input type="number" min="1" class="text qty" data-id="'+this.id+'" name="qty['+this.id+']" value="1">'));
-							$div.append($el.find('.icon'));
+						$div.append($el.find('.status'));
+						$div.append($el.find('.label'));
+						$div.append($('<input type="number" min="1" class="text qty" data-id="' + this.id + '" name="qty[' + this.id + ']" value="1">'));
+						$div.append($el.find('.icon'));
 					}
 				});
 				self.updateSizeAndPosition();
-				
 			}
 		});
-
 	},
 	onSelectStatus: function(status) {
 		this.deselectStatus();
@@ -189,25 +188,40 @@ Craft.Commerce.OrderNoteModal = Garnish.Modal.extend({
 
 		this.$saveBtn.removeClass('disabled');
 
+		this.$comments.removeClass('hidden');
 		this.$value.detach();
 		this.$code.detach();
 		this.$qty.detach();
+		this.$email.detach();
 		//this.$productSelect.detach();
 		this.$add.addClass('hidden');
 
-		if (type == 'manual') {
-			this.$value.appendTo(this.$inputs);
-		}
-		if (type == 'code') {
-			this.$code.appendTo(this.$inputs);
-		}
-		if (type == 'qty') {
-			this.$qty.appendTo(this.$inputs);
-		}
-		if (type == 'add') {
-			//this.$productSelect.appendTo(this.$inputs);
-			this.$add.removeClass('hidden');
-		}
+		var self = this;
+		$.each(this.settings.types, function(key, value) {
+			if (value.type == type) {
+				$.each(value.props, function(k, v) {
+					self['$' + v].removeClass('hidden').appendTo(self.$inputs);
+				});
+			}
+		});
+
+		// if (type == 'manual') {
+		// 	this.$value.appendTo(this.$inputs);
+		// }
+		// if (type == 'code') {
+		// 	this.$code.appendTo(this.$inputs);
+		// }
+		// if (type == 'qty') {
+		// 	this.$qty.appendTo(this.$inputs);
+		// }
+		// if (type == 'add') {
+		// 	//this.$productSelect.appendTo(this.$inputs);
+		// 	this.$add.removeClass('hidden');
+		// }
+		// if (type == 'email') {
+		// 	this.$comments.addClass('hidden');
+		// 	this.$email.appendTo(this.$inputs);
+		// }
 
 		this.updateSizeAndPosition();
 	},
@@ -258,23 +272,33 @@ Craft.Commerce.OrderNoteModal = Garnish.Modal.extend({
 			data.data.qty = [];
 			this.$qty.find('input').each(function() {
 				data.data.qty.push({
-					id: ''+this.name.replace('qty[', '').replace(']', ''),
+					id: '' + this.name.replace('qty[', '').replace(']', ''),
 					label: this.dataset.label,
 					values: { old: $(this).attr('data-value'), new: Number(this.value) }
 				});
 			});
 		}
+		if (this.$email.is(':visible')) {
+			data.data.oldEmail = this.settings.email;
+			data.data.email = this.$email.find('input[name="email"]').val();
+			data.comments = this.settings.email + ' => ' + data.data.email;
+		}
 		//console.log(this.$productSelect.is(':visible'));
 		if (this.$add.find('#productPicker').is(':visible')) {
 			//console.log(this.addIds);
 			data.data.add = [];
-			$('#productPicker').find('.qty').each(function(){
-				data.data.add.push({
-					id: this.dataset.id,
-					label: $(this).parent().find('.label').text(),
-					qty: Number(this.value)
-				})
-			})
+			$('#productPicker')
+				.find('.qty')
+				.each(function() {
+					data.data.add.push({
+						id: this.dataset.id,
+						label: $(this)
+							.parent()
+							.find('.label')
+							.text(),
+						qty: Number(this.value)
+					});
+				});
 			//data['variant'] = this.$productSelect.find('input[name="variant[]"]').val();
 			//data['qty'] = this.$productSelect.find('input[name="qty"]').val();
 		}

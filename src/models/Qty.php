@@ -32,7 +32,16 @@ class Qty extends Note
 
     // Public Methods
 	// =========================================================================
+	public function getName()
+	{
+		return 'Quantity Adjustment';
+	}
 	
+	public function getProperties()
+	{
+		// available: comments, value, qty, code, email, add
+		return ['comments', 'qty'];
+	}
 
 	public function getValue($currency=false)
 	{

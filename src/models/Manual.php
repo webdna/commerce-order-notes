@@ -30,7 +30,16 @@ class Manual extends Note
 
     // Public Methods
 	// =========================================================================
+	public function getName()
+	{
+		return 'Manual Discount';
+	}
 	
+	public function getProperties()
+	{
+		// available: comments, value, qty, code, email, add
+		return ['comments', 'value'];
+	}
 
     /**
      * @inheritdoc

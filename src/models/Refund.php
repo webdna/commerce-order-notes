@@ -31,6 +31,11 @@ class Refund extends Note
     // Public Methods
 	// =========================================================================
 
+	public function getName()
+	{
+		return 'Refund';
+	}
+	
 	public function afterValidate()
 	{
 		

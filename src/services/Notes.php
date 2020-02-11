@@ -19,6 +19,7 @@ use Craft;
 use craft\base\Component;
 use craft\helpers\Db;
 use craft\db\Query;
+use craft\events\RegisterComponentTypesEvent;
 
 /**
  * @author    Kurious Agency
@@ -28,12 +29,21 @@ use craft\db\Query;
 class Notes extends Component
 {
 	private $_types = [
-		'note' => 'General note',
-		'manual' => 'Manual Discount',
-		'code' => 'Discount Code',
-		'qty' => 'Quantity Adjustment',
-		'add' => 'Add Product',
+		\kuriousagency\commerce\ordernotes\models\Note::class,
+		\kuriousagency\commerce\ordernotes\models\Email::class,
+		\kuriousagency\commerce\ordernotes\models\Manual::class,
+		\kuriousagency\commerce\ordernotes\models\Code::class,
+		\kuriousagency\commerce\ordernotes\models\Qty::class,
+		\kuriousagency\commerce\ordernotes\models\Add::class,
 	];
+
+	/*
+		Event::on(Notes::class, Notes::EVENT_REGISTER_NOTE_TYPES, function(RegisterComponentTypesEvent $e) {
+			$e->types[] = MyType::class;
+		});
+	*/
+
+	const EVENT_REGISTER_NOTE_TYPES = 'registerNoteTypes';
 	
 	// Public Methods
     // =========================================================================
@@ -51,8 +61,8 @@ class Notes extends Component
 
 		foreach ($results as $result)
 		{
-			$class = "kuriousagency\\commerce\\ordernotes\\models\\".ucfirst($result['type']);
-			$model = new $class();
+			//$class = "kuriousagency\\commerce\\ordernotes\\models\\".ucfirst($result['type']);
+			$model = new $result['type']();
 			$notes[] = new $model($result);
 		}
 		
@@ -74,8 +84,8 @@ class Notes extends Component
 
 		foreach ($results->all() as $result)
 		{
-			$class = "kuriousagency\\commerce\\ordernotes\\models\\".ucfirst($result['type']);
-			$model = new $class();
+			//$class = "kuriousagency\\commerce\\ordernotes\\models\\".ucfirst($result['type']);
+			$model = new $result['type']();
 			$notes[] = new $model($result);
 		}
 		
@@ -117,6 +127,19 @@ class Notes extends Component
 		return $record->save();
 	}
 
+	public function updateOrder($order)
+	{
+		//$order = Commerce::getInstance()->getOrders()->getOrderById($orderId);
+		//Craft::dd($order->lineItems);
+		$orderComplete = $order->isCompleted;
+		$order->isCompleted = false;
+		Craft::$app->getElements()->saveElement($order, false);
+		if ($orderComplete != $order->isCompleted) {
+			$order->isCompleted = true;
+			Craft::$app->getElements()->saveElement($order, false);
+		}
+	}
+
 	public function deleteNoteById($id)
 	{
 		$record = NoteRecord::findOne($id);
@@ -126,40 +149,53 @@ class Notes extends Component
 		}
 	}
 
-	public function getTypeName($key)
+	/*public function getTypeName($key)
 	{
 		if ($key == 'refund') {
 			return 'Refund';
 		}
 
 		return $this->_types[$key];
-	}
+	}*/
 
 	public function getTypes($order = null)
 	{
 		$types = [];
 
-		foreach ($this->_types as $key => $value)
+		foreach ($this->_types as $type)
 		{
-			if ($key == 'note') {
-				$types[$key] = $value;
+			$handle = (new \ReflectionClass($type))->getShortName();
+			if ($handle == 'Note') {
+				$types[] = $type;
 
-			} elseif (Craft::$app->user->checkPermission('ordernotes_type_'.$key)) {
-				if ($key == 'manual' || $key == 'code') {
+			} elseif (Craft::$app->user->checkPermission('ordernotes_type_'.$handle)) {
+				if ($handle == 'Manual' || $handle == 'Code') {
 					if (!$order || ($order && !$order->isPaid)) {
-						$types[$key] = $value;
+						$types[] = $type;
 					}
 				} else {
-					$types[$key] = $value;
+					$types[] = $type;
 				}
 			}
 		}
+
+		$event = new RegisterComponentTypesEvent([
+            'types' => $types
+        ]);
+
+		$this->trigger(self::EVENT_REGISTER_NOTE_TYPES, $event);
 		
-		return $types;
+		return $event->types;
 	}
 
 	public function getAllTypes()
 	{
-		return $this->_types;
+		$event = new RegisterComponentTypesEvent([
+            'types' => $this->_types
+        ]);
+
+		$this->trigger(self::EVENT_REGISTER_NOTE_TYPES, $event);
+		
+		return $event->types;
 	}
 }

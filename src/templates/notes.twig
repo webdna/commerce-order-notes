@@ -22,7 +22,7 @@
                     <tr data-id="{{ note.id }}" data-name="{{ 'Note of {date}'|t({ date: note.dateCreated|date('d-m-Y H:i:s') }) }}">
 						<th scope="row" data-title="{{ 'Date'|t }}">{{ note.dateCreated|date('d-m-Y H:i:s') }}</th>
 						<td data-title="{{ 'Comments'|t }}">{{ note.getComments()|raw|nl2br }}</td>
-						<td data-title="{{ 'Type'|t }}">{{ note.typeName }}</td>
+						<td data-title="{{ 'Type'|t }}">{{ note.name }}</td>
 						<td data-title="{{ 'Value'|t }}">{{ note.getValue(order.paymentCurrency) }}</td>
 						<td data-title="{{ 'User'|t }}">{{ note.user.fullname }}</td>
 						<td class="thin">
@@ -64,6 +64,7 @@
         ];
 
         new Craft.Commerce.OrderNotes({
+			email: '{{ order.email }}',
             orderId: {{ order.id }},
             types: {{ noteTypes|json_encode|raw }},
 			lineItems: lineItems

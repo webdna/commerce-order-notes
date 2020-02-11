@@ -53,8 +53,8 @@ class NotesController extends Controller
 		$value = $request->getParam('value', 0);
 		$data = $request->getParam('data', []);
 
-		$class = "kuriousagency\\commerce\\ordernotes\\models\\".ucfirst($type);
-		$model = new $class();
+		//$class = "kuriousagency\\commerce\\ordernotes\\models\\".ucfirst($type);
+		$model = new $type();
 
 		$model->type = $type;
 		$model->orderId = $orderId;
@@ -83,7 +83,7 @@ class NotesController extends Controller
 
 		$model->afterSave();
 //Craft::dd(count($model->order->lineItems));
-		$this->_updateOrder($model->order);
+		OrderNotes::$plugin->notes->updateOrder($model->order);
 
 		return $this->asJson(['success'=>true]);
 	}
@@ -98,25 +98,16 @@ class NotesController extends Controller
 		if ($id) {
 			$note = OrderNotes::$plugin->notes->getNoteById($id);
 			OrderNotes::$plugin->notes->deleteNoteById($id);
-			$this->_updateOrder($note->order);
+
+			//$class = "kuriousagency\\commerce\\ordernotes\\models\\".ucfirst($note->type);
+			$model = new $note->type($note);
+			$model->afterDelete();
+
+			OrderNotes::$plugin->notes->updateOrder($model->order);
 			return $this->asJson(['success' => true]);
 		}
 
 		return $this->asErrorJson("There was an error deleting the note.");
 	}
 
-	
-
-	private function _updateOrder($order)
-	{
-		//$order = Commerce::getInstance()->getOrders()->getOrderById($orderId);
-		//Craft::dd($order->lineItems);
-		$orderComplete = $order->isCompleted;
-		$order->isCompleted = false;
-		Craft::$app->getElements()->saveElement($order, false);
-		if ($orderComplete != $order->isCompleted) {
-			$order->isCompleted = true;
-			Craft::$app->getElements()->saveElement($order, false);
-		}
-	}
 }

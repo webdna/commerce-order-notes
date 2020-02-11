@@ -60,7 +60,7 @@ class OrderNotes extends Plugin
     /**
      * @var string
      */
-    public $schemaVersion = '1.0.0';
+    public $schemaVersion = '1.1.0';
 
     // Public Methods
     // =========================================================================
@@ -122,7 +122,7 @@ class OrderNotes extends Plugin
 				//Craft::dd($event);
 				if ($event->transaction->status == 'success') {
 					$model = new RefundModel();
-					$model->type = 'refund';
+					$model->type = 'kuriousagency\\commerce\\ordernotes\\models\\Refund';
 					$model->orderId = $event->transaction->orderId;
 					$model->userId = Craft::$app->getUser()->getIdentity()->id;
 					$model->comments = Craft::$app->getRequest()->getParam('note');
@@ -130,6 +130,7 @@ class OrderNotes extends Plugin
 					$model->data = '';
 					//Craft::dd($model);
 					OrderNotes::$plugin->notes->saveNote($model);
+					//OrderNotes::$plugin->notes->updateOrder($model->order);
 				}
 			});
 		}
@@ -138,14 +139,16 @@ class OrderNotes extends Plugin
 			
 			$permissions = [];
 
-			foreach ($this->notes->getAllTypes() as $key => $type)
+			foreach ($this->notes->getAllTypes() as $type)
 			{
-				if ($key != 'note') {
-					$permissions['ordernotes_type_'.$key] = ['label' => $type];
+				$handle = (new \ReflectionClass($type))->getShortName();
+				$class = new $type();
+				if ($handle != 'Note') {
+					$permissions['ordernotes_type_'.$handle] = ['label' => $class->name];
 				}
 			}
 
-			$permissions['ordernotes_action_delete'] = ['label' => 'Delete Notes'];
+			$permissions['ordernotes_action_Delete'] = ['label' => 'Delete Notes'];
 			
 			$event->permissions['Order Notes'] = $permissions;
 		});
@@ -169,10 +172,21 @@ class OrderNotes extends Plugin
 				'class' => null
 			];
 
+			$types = [];
+			foreach ($this->notes->getTypes($context['order']) as $type)
+			{
+				$class = new $type();
+				$types[] = [
+					'type' => $type,
+					'name' => $class->name,
+					'props' => $class->properties,
+				];
+			}
+
         	return $view->renderTemplate('commerce-order-notes/notes', [
 				'order' => $context['order'],
 				'notes' => $this->notes->getNotesByOrderId($context['order']->id),
-				'noteTypes' => $this->notes->getTypes($context['order']),
+				'noteTypes' => $types,
 			]);
 		});
 

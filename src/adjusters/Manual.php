@@ -56,7 +56,8 @@ class Manual extends Component implements AdjusterInterface
 
 		foreach (OrderNotes::$plugin->notes->getNotesByOrderId($order->id) as $note)
 		{
-			if ($note->type == 'manual') {
+			$handle = (new \ReflectionClass($note->type))->getShortName();
+			if ($handle == 'Manual') {
 				//Craft::dd($order);
 				$adjustment = new OrderAdjustment();
 				$adjustment->type = self::ADJUSTMENT_TYPE;

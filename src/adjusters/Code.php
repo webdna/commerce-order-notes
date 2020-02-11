@@ -68,7 +68,8 @@ class Code extends Component implements AdjusterInterface
 
 		foreach (OrderNotes::$plugin->notes->getNotesByOrderId($order->id) as $note)
 		{
-			if ($note->type == 'code') {
+			$handle = (new \ReflectionClass($note->type))->getShortName();
+			if ($handle == 'Code') {
 				$codes[] = $note->getData()->code;
 			}
 		}

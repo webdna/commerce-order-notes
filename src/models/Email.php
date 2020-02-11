@@ -23,74 +23,42 @@ use craft\base\Model;
  * @package   CommerceOrderNotes
  * @since     1.0.0
  */
-class Add extends Note
+class Email extends Note
 {
     // Public Properties
     // =========================================================================
-
 
 
     // Public Methods
 	// =========================================================================
 	public function getName()
 	{
-		return 'Add Product';
+		return 'Change Email';
 	}
 	
 	public function getProperties()
 	{
 		// available: comments, value, qty, code, email, add
-		return ['comments', 'add'];
+		return ['comments', 'email'];
 	}
 
 	public function getValue($currency=false)
 	{
-		return '';
+		return 0;
 	}
 
-	public function getComments()
-	{
-		$result = $this->comments."\n";
-		foreach ($this->getData()->add as $item)
-		{
-			$result .= "Added: $item->qty x $item->label\n";
-		}
-		return $result;
-	}
 
-	public function afterValidate()
-	{
-		if (!$this->getData() || !count($this->getData()->add)) {
-			$this->addError('add', "Please select a product");
-		}
-	}
 
 	public function afterSave()
 	{
-		foreach ($this->getData()->add as $item)
-		{
-			$purchasableId = $item->id;
-			$note = '';
-			$options = [];
-			$qty = $item->qty;
-
-			$lineItem = Commerce::getInstance()->getLineItems()->resolveLineItem($this->order->id, $purchasableId, $options);
-
-			// New line items already have a qty of one.
-			if ($lineItem->id) {
-				$lineItem->qty += $qty;
-			} else {
-				$lineItem->qty = $qty;
-			}
-
-			$lineItem->note = $note;
-			//$this->order->isCompleted = false;
-			$this->order->addLineItem($lineItem);
-
-		}
+		$this->getOrder()->email = $this->getData()->email;
 	}
 
-
+	public function afterDelete()
+	{
+		$this->getOrder()->email = $this->getData()->oldEmail;
+	}
+	
 
     /**
      * @inheritdoc
@@ -98,7 +66,7 @@ class Add extends Note
     public function rules()
     {
         return [
-            [['orderId', 'userId', 'comments', 'type', 'data'], 'required'],
+            [['orderId', 'userId', 'type', 'data'], 'required'],
         ];
     }
 }

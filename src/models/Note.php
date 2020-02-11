@@ -55,15 +55,24 @@ class Note extends Model
 	public function getOrder()
 	{
 		if (!$this->_order) {
+			if (!$this->orderId) {
+				return null;
+			}
 			$this->_order = Order::findOne($this->orderId);
 		}
 
 		return $this->_order;
 	}
 
-	public function getTypeName()
+	public function getName()
 	{
-		return OrderNotes::$plugin->notes->getTypeName($this->type);
+		return 'Note';
+	}
+
+	public function getProperties()
+	{
+		// available: comments, value, qty, code, email, add
+		return ['comments'];
 	}
 
 	public function getComments()
@@ -104,6 +113,11 @@ class Note extends Model
 	}
 
 	public function afterSave()
+	{
+
+	}
+
+	public function afterDelete()
 	{
 
 	}
