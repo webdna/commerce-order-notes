@@ -35,31 +35,31 @@ class m200110_100000_notetypes extends Migration
      */
     public function safeUp()
     {
-        $this->update('%commerce_ordernotes', [
+        $this->update('{{%commerce_ordernotes}}', [
 			'type' => 'kuriousagency\commerce\ordernotes\models\Note',
 		], [
 			'type' => 'note',
 		]);
 		
-		$this->update('%commerce_ordernotes', [
+		$this->update('{{%commerce_ordernotes}}', [
 			'type' => 'kuriousagency\commerce\ordernotes\models\Add',
 		], [
 			'type' => 'add',
 		]);
 
-		$this->update('%commerce_ordernotes', [
+		$this->update('{{%commerce_ordernotes}}', [
 			'type' => 'kuriousagency\commerce\ordernotes\models\Qty',
 		], [
 			'type' => 'qty',
 		]);
 
-		$this->update('%commerce_ordernotes', [
+		$this->update('{{%commerce_ordernotes}}', [
 			'type' => 'kuriousagency\commerce\ordernotes\models\Code',
 		], [
 			'type' => 'code',
 		]);
 
-		$this->update('%commerce_ordernotes', [
+		$this->update('{{%commerce_ordernotes}}', [
 			'type' => 'kuriousagency\commerce\ordernotes\models\Manual',
 		], [
 			'type' => 'manual',
