@@ -58,10 +58,9 @@ class Manual extends Component implements AdjusterInterface
 		{
 			$handle = (new \ReflectionClass($note->type))->getShortName();
 			if ($handle == 'Manual') {
-				//Craft::dd($order);
 				$adjustment = new OrderAdjustment();
 				$adjustment->type = self::ADJUSTMENT_TYPE;
-				$adjustment->name = $note->typeName;
+				$adjustment->name = $note->name;
 				$adjustment->orderId = $order->id;
 				$adjustment->description = $note->comments;
 				$adjustment->amount = 0-($note->value);
