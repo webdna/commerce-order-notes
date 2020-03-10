@@ -53,7 +53,7 @@ class Manual extends Component implements AdjusterInterface
     public function adjust(Order $order): array
     {
 		$adjustments = [];
-
+        
 		foreach (OrderNotes::$plugin->notes->getNotesByOrderId($order->id) as $note)
 		{
 			$handle = (new \ReflectionClass($note->type))->getShortName();
@@ -68,7 +68,6 @@ class Manual extends Component implements AdjusterInterface
 				$adjustments[] = $adjustment;
 			}
 		}
-
         return $adjustments;
     }
 }

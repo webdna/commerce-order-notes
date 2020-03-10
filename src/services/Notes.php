@@ -132,10 +132,13 @@ class Notes extends Component
 		//$order = Commerce::getInstance()->getOrders()->getOrderById($orderId);
 		//Craft::dd($order->lineItems);
 		$orderComplete = $order->isCompleted;
+		$orderRecalcMode = $order->getRecalculationMode();
 		$order->isCompleted = false;
+		$order->setRecalculationMode('adjustmentsOnly');
 		Craft::$app->getElements()->saveElement($order, false);
 		if ($orderComplete != $order->isCompleted) {
 			$order->isCompleted = true;
+			$order->setRecalculationMode($orderRecalcMode);
 			Craft::$app->getElements()->saveElement($order, false);
 		}
 	}
