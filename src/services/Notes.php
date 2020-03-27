@@ -131,16 +131,26 @@ class Notes extends Component
 
 	public function updateOrder($order)
 	{
+		$version = Craft::$app->getPlugins()->getPlugin('commerce')->version;
+		$useNew = false;		
+		if ($version >= 3) {
+			$useNew = true;
+		}
 		//$order = Commerce::getInstance()->getOrders()->getOrderById($orderId);
 		//Craft::dd($order->lineItems);
+		
 		$orderComplete = $order->isCompleted;
-		// $orderRecalcMode = $order->getRecalculationMode();
+		if ($useNew) {
+			$orderRecalcMode = $order->getRecalculationMode();
+			$order->setRecalculationMode('adjustmentsOnly');
+		}		
 		$order->isCompleted = false;
-		// $order->setRecalculationMode('adjustmentsOnly');
 		Craft::$app->getElements()->saveElement($order, false);
 		if ($orderComplete != $order->isCompleted) {
 			$order->isCompleted = true;
-			// $order->setRecalculationMode($orderRecalcMode);
+			if ($useNew) {
+				$order->setRecalculationMode($orderRecalcMode);
+			}
 			Craft::$app->getElements()->saveElement($order, false);
 		}
 	}
