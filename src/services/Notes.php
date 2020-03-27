@@ -35,6 +35,8 @@ class Notes extends Component
 		\kuriousagency\commerce\ordernotes\models\Code::class,
 		\kuriousagency\commerce\ordernotes\models\Qty::class,
 		\kuriousagency\commerce\ordernotes\models\Add::class,
+		\kuriousagency\commerce\ordernotes\models\AddTicket::class,
+		\kuriousagency\commerce\ordernotes\models\AddBundle::class,
 	];
 
 	/*
@@ -132,13 +134,13 @@ class Notes extends Component
 		//$order = Commerce::getInstance()->getOrders()->getOrderById($orderId);
 		//Craft::dd($order->lineItems);
 		$orderComplete = $order->isCompleted;
-		$orderRecalcMode = $order->getRecalculationMode();
+		// $orderRecalcMode = $order->getRecalculationMode();
 		$order->isCompleted = false;
-		$order->setRecalculationMode('adjustmentsOnly');
+		// $order->setRecalculationMode('adjustmentsOnly');
 		Craft::$app->getElements()->saveElement($order, false);
 		if ($orderComplete != $order->isCompleted) {
 			$order->isCompleted = true;
-			$order->setRecalculationMode($orderRecalcMode);
+			// $order->setRecalculationMode($orderRecalcMode);
 			Craft::$app->getElements()->saveElement($order, false);
 		}
 	}

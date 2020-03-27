@@ -2,26 +2,26 @@
 	margin-left: 5px;
 }
 
-.modal.order-notes #productPicker .element.small.hasstatus:not(.hasthumb) {
+.modal.order-notes [id$="Picker"] .element.small.hasstatus:not(.hasthumb) {
 	padding-left: 7px;
 }
-.modal.order-notes #productPicker .element {
+.modal.order-notes [id$="Picker"] .element {
 	width: 100%;
 	margin: 0;
 }
-.modal.order-notes #productPicker .element .flex .status {
+.modal.order-notes [id$="Picker"] .element .flex .status {
 	position: relative;
 	left: 0;
 }
-.modal.order-notes #productPicker .element .flex .label {
+.modal.order-notes [id$="Picker"] .element .flex .label {
 	flex-grow: 1;
 	padding-right: 7px;
 }
-.modal.order-notes #productPicker .element .flex .qty {
+.modal.order-notes [id$="Picker"] .element .flex .qty {
 	width: 60px;
 	margin: 0;
 }
-.modal.order-notes #productPicker .element .flex .icon {
+.modal.order-notes [id$="Picker"] .element .flex .icon {
 	position: relative;
 	margin-left: 14px;
 	margin-bottom: 0;

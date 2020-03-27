@@ -99,6 +99,17 @@ Craft.Commerce.OrderNoteModal = Garnish.Modal.extend({
 		this.$add = $('<div class="field hidden">' + '<div class="heading">' + '<label class="required">' + Craft.t('commerce', 'Product') + '</label>' + '<div class="instructions"><p>' + Craft.t('commerce', 'Select products to add to the order') + '.</p>' + '</div>' + '</div>' + '<div class="input ltr">' + '<div id="productPicker" class="elementselect">' + '<div class="elements">' + '</div>' + '<div class="btn add icon dashed">Choose</div>' + '</div>' + '</div>' + '</div>').appendTo(
 			this.$inputs
 		);
+		// -----------------
+		this.$tickets = $('<div class="field">' + '<div class="heading">' + '<label>' + Craft.t('Ticket') + '</label>' + '</div>' + '<div class="input ltr">' + '<table class="data fullwidth"><tbody><tr><td></td><td><input class="text fullwidth" name="qty" value="" placeholder="qty" required /></td></tr></tbody></table>' + '</div>' + '</div>');
+		this.$addTickets = $('<div class="field hidden">' + '<div class="heading">' + '<label class="required">' + Craft.t('events', 'Ticket') + '</label>' + '<div class="instructions"><p>' + Craft.t('events', 'Select tickets to add to the order') + '.</p>' + '</div>' + '</div>' + '<div class="input ltr">' + '<div id="ticketPicker" class="elementselect">' + '<div class="elements">' + '</div>' + '<div class="btn add icon dashed">Choose</div>' + '</div>' + '</div>' + '</div>').appendTo(
+			this.$inputs
+		);
+		this.$bundles = $('<div class="field">' + '<div class="heading">' + '<label>' + Craft.t('Bundle') + '</label>' + '</div>' + '<div class="input ltr">' + '<table class="data fullwidth"><tbody><tr><td></td><td><input class="text fullwidth" name="qty" value="" placeholder="qty" required /></td></tr></tbody></table>' + '</div>' + '</div>');
+		this.$addBundles = $('<div class="field hidden">' + '<div class="heading">' + '<label class="required">' + Craft.t('bundles', 'Bundle') + '</label>' + '<div class="instructions"><p>' + Craft.t('bundles', 'Select nundles to add to the order') + '.</p>' + '</div>' + '</div>' + '<div class="input ltr">' + '<div id="bundlePicker" class="elementselect">' + '<div class="elements">' + '</div>' + '<div class="btn add icon dashed">Choose</div>' + '</div>' + '</div>' + '</div>').appendTo(
+			this.$inputs
+		);
+		// -----------------
+		// console.log(this.$inputs);
 		this.$email = $('<div class="field">' + '<div class="heading">' + '<label class="required">' + Craft.t('commerce', 'Email') + '</label>' + '<div class="instructions"><p>' + Craft.t('commerce', 'The customers email') + '.</p>' + '</div>' + '</div>' + '<div class="input ltr">' + '<input type="text" class="text fullwidth" name="email" value="' + this.settings.email + '">' + '</div>' + '</div>');
 
 		//<div id="{{ id }}" class="elementselect"><div class="elements"></div><div class="btn add icon dashed">Choose</div></div>
@@ -152,7 +163,7 @@ Craft.Commerce.OrderNoteModal = Garnish.Modal.extend({
 			selectable: false,
 			modalStorageKey: null,
 			onSelectElements: function(e) {
-				//console.log(e);
+				// console.log(e);
 				//$('#main').addClass('loading');
 				$.each(e, function(i) {
 					console.log(this);
@@ -174,13 +185,84 @@ Craft.Commerce.OrderNoteModal = Garnish.Modal.extend({
 				self.updateSizeAndPosition();
 			}
 		});
+		new Craft.BaseElementSelectInput({
+			id: 'ticketPicker',
+			name: 'ticket',
+			elementType: 'verbb\\events\\elements\\Ticket',
+			sources: null,
+			criteria: {  },
+			sourceElementId: null,
+			viewMode: 'list',
+			limit: null,
+			editable: false,
+			sortable: false,
+			selectable: false,
+			modalStorageKey: null,
+			onSelectElements: function(e) {
+				// console.log(e);
+				//$('#main').addClass('loading');
+				$.each(e, function(i) {
+					console.log(this.id);
+
+					var $el = $('#ticketPicker .element[data-id="' + this.id + '"]');
+					var $qty = $el.find('input[name="qty[' + this.id + ']"]');
+					//console.log($el)
+					//console.log($qty)
+					if ($qty[0]) {
+						$qty.val(Number($qty.val()) + 1);
+					} else {
+						var $div = $('<div class="flex"></div>').appendTo($el);
+						$div.append($el.find('.status'));
+						$div.append($el.find('.label'));
+						$div.append($('<input type="number" min="1" class="text qty" data-id="' + this.id + '" name="qty[' + this.id + ']" value="1">'));
+						$div.append($el.find('.icon'));
+					}
+				});
+				self.updateSizeAndPosition();
+			}
+		});
+		new Craft.BaseElementSelectInput({
+			id: 'bundlePicker',
+			name: 'bundle',
+			elementType: 'kuriousagency\\commerce\\bundles\\elements\\Bundle',
+			sources: null,
+			criteria: {  },
+			sourceElementId: null,
+			viewMode: 'list',
+			limit: null,
+			editable: false,
+			sortable: false,
+			selectable: false,
+			modalStorageKey: null,
+			onSelectElements: function(e) {
+				// console.log(e);
+				//$('#main').addClass('loading');
+				$.each(e, function(i) {
+					console.log(this);
+
+					var $el = $('#bundlePicker .element[data-id="' + this.id + '"]');
+					var $qty = $el.find('input[name="qty[' + this.id + ']"]');
+					//console.log($el)
+					//console.log($qty)
+					if ($qty[0]) {
+						$qty.val(Number($qty.val()) + 1);
+					} else {
+						var $div = $('<div class="flex"></div>').appendTo($el);
+						$div.append($el.find('.status'));
+						$div.append($el.find('.label'));
+						$div.append($('<input type="number" min="1" class="text qty" data-id="' + this.id + '" name="qty[' + this.id + ']" value="1">'));
+						$div.append($el.find('.icon'));
+					}
+				});
+				self.updateSizeAndPosition();
+			}
+		});
 	},
 	onSelectStatus: function(status) {
 		this.deselectStatus();
-		//console.log(status);
+		// console.log(status);
 		this.$selectedStatus = $(status);
 		var type = this.$selectedStatus.data('id');
-
 		this.$selectedStatus.addClass('sel');
 
 		var newHtml = '<span>' + Craft.uppercaseFirst($(status).data('name')) + '</span>';
@@ -195,10 +277,13 @@ Craft.Commerce.OrderNoteModal = Garnish.Modal.extend({
 		this.$email.detach();
 		//this.$productSelect.detach();
 		this.$add.addClass('hidden');
+		this.$addTickets.addClass('hidden');
+		this.$addBundles.addClass('hidden');
 
 		var self = this;
 		$.each(this.settings.types, function(key, value) {
 			if (value.type == type) {
+				console.log(value.props);
 				$.each(value.props, function(k, v) {
 					self['$' + v].removeClass('hidden').appendTo(self.$inputs);
 				});
@@ -284,10 +369,10 @@ Craft.Commerce.OrderNoteModal = Garnish.Modal.extend({
 			data.comments = this.settings.email + ' => ' + data.data.email;
 		}
 		//console.log(this.$productSelect.is(':visible'));
-		if (this.$add.find('#productPicker').is(':visible')) {
+		if (this.$add.find('#productPicker').is(':visible') || this.$addTickets.find('#ticketPicker').is(':visible') || this.$addBundles.find('#bundlePicker').is(':visible')) {
 			//console.log(this.addIds);
 			data.data.add = [];
-			$('#productPicker')
+			$('[id$="Picker"]')
 				.find('.qty')
 				.each(function() {
 					data.data.add.push({

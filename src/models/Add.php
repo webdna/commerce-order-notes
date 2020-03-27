@@ -84,8 +84,13 @@ class Add extends Note
 			}
 
 			$lineItem->note = $note;
-			//$this->order->isCompleted = false;
+			$isComplete = $this->order->isCompleted;
+			$this->order->isCompleted = false;
+			Craft::$app->getElements()->saveElement($this->order);
 			$this->order->addLineItem($lineItem);
+			if ($isComplete) {
+				$this->order->markAsComplete();
+			}
 
 		}
 	}
