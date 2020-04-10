@@ -1,3 +1,20 @@
+.modal.order-notes {
+	overflow: scroll;
+	width: 600px;
+	max-width: 90vw;
+}
+.modal.order-notes .header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+.modal.order-notes .header:after {
+	display: none;
+}
+.modal.order-notes .header h2 {
+	margin-bottom: 0;
+}
+
 .modal.order-notes .btngroup .btn {
 	margin-left: 5px;
 }
