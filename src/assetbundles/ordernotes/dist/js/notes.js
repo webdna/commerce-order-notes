@@ -64,16 +64,17 @@ Craft.Commerce.OrderNoteModal = Garnish.Modal.extend({
 
 		this.setSettings(settings, {
 			resizable: true,
-			draggable: true,
+			hideOnShadeClick: false,
 		});
 		//console.log(this.settings)
 
 		var self = this;
 
 		var $form = $('<form class="modal fitted order-notes" method="post" accept-charset="UTF-8"/>').appendTo(Garnish.$bod);
-		var $header = $('<div class="header"/>').appendTo($form);
+		var $container = $('<div class="notes-container"></div>').appendTo($form);
+		var $header = $('<div class="header"/>').appendTo($container);
 		$('<h2 class="">' + Craft.t('commerce', 'Order Note') + '</h2>').appendTo($header);
-		var $body = $('<div class="body"></div>').appendTo($form);
+		var $body = $('<div class="body"></div>').appendTo($container);
 		this.$inputs = $('<div class="content"></div>').appendTo($body);
 
 		// Build menu button
@@ -111,7 +112,7 @@ Craft.Commerce.OrderNoteModal = Garnish.Modal.extend({
 		this.$error = $('<div class="error"/>').appendTo(this.$inputs);
 
 		// Footer and buttons
-		var $footer = $('<div class="footer"/>').appendTo($form);
+		var $footer = $('<div class="footer"/>').appendTo($container);
 		var $mainBtnGroup = $('<div class="btngroup right"/>').appendTo($footer);
 		this.$cancelBtn = $('<input type="button" class="btn" value="' + Craft.t('commerce', 'Cancel') + '"/>').appendTo($mainBtnGroup);
 		this.$saveBtn = $('<input type="button" class="btn submit" value="' + Craft.t('commerce', 'Save') + '"/>').appendTo($mainBtnGroup);
@@ -141,7 +142,7 @@ Craft.Commerce.OrderNoteModal = Garnish.Modal.extend({
 		this.addListener(this.$comments.find('textarea'), 'mouseup', function (e) {
 			self.updateSizeAndPosition();
 		});
-		this.base($form, settings);
+		this.base($form, this.settings);
 
 		//init new variant modal
 

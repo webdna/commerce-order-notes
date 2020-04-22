@@ -83,7 +83,7 @@ class NotesController extends Controller
 
 		$model->afterSave();
 //Craft::dd(count($model->order->lineItems));
-		OrderNotes::$plugin->notes->updateOrder($model->order);
+		OrderNotes::$plugin->notes->updateOrder($model->order, $model->value != 0);
 
 		return $this->asJson(['success'=>true]);
 	}
@@ -103,7 +103,7 @@ class NotesController extends Controller
 			$model = new $note->type($note);
 			$model->afterDelete();
 
-			OrderNotes::$plugin->notes->updateOrder($model->order);
+			OrderNotes::$plugin->notes->updateOrder($model->order, $model->value != 0);
 			return $this->asJson(['success' => true]);
 		}
 

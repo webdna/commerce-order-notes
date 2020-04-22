@@ -21,6 +21,8 @@ use craft\helpers\Db;
 use craft\db\Query;
 use craft\events\RegisterComponentTypesEvent;
 
+use craft\commerce\Plugin as Commerce;
+
 /**
  * @author    Kurious Agency
  * @package   CommerceOrderNotes
@@ -127,18 +129,29 @@ class Notes extends Component
 		return $record->save();
 	}
 
-	public function updateOrder($order)
+	public function updateOrder($order, $recalc=true)
 	{
-		//$order = Commerce::getInstance()->getOrders()->getOrderById($orderId);
-		//Craft::dd($order->lineItems);
-		$orderComplete = $order->isCompleted;
-		$orderRecalcMode = $order->getRecalculationMode();
-		$order->isCompleted = false;
-		$order->setRecalculationMode('adjustmentsOnly');
-		Craft::$app->getElements()->saveElement($order, false);
-		if ($orderComplete != $order->isCompleted) {
-			$order->isCompleted = true;
-			$order->setRecalculationMode($orderRecalcMode);
+		if ($recalc) {
+			$orderComplete = $order->isCompleted;
+			$orderRecalcMode = $order->getRecalculationMode();
+			$order->isCompleted = false;
+			$order->setRecalculationMode('adjustmentsOnly');
+			if ($order->couponCode) {
+				$discount = Commerce::getInstance()->getDiscounts()->getDiscountByCode($order->couponCode);
+				if ($discount) {
+					Craft::$app->db->createCommand()->delete('craft_commerce_email_discountuses', [
+						'email' => $order->email,
+						'discountId' => $discount->id,
+					])->execute();
+				}
+			}
+			Craft::$app->getElements()->saveElement($order, false);
+			if ($orderComplete != $order->isCompleted) {
+				$order->isCompleted = true;
+				$order->setRecalculationMode($orderRecalcMode);
+				Craft::$app->getElements()->saveElement($order, false);
+			}
+		} else {
 			Craft::$app->getElements()->saveElement($order, false);
 		}
 	}
@@ -172,7 +185,7 @@ class Notes extends Component
 				$types[] = $type;
 
 			} elseif (Craft::$app->user->checkPermission('ordernotes_type_'.$handle)) {
-				if ($handle == 'Manual' || $handle == 'Code') {
+				if ($handle == 'Code') {
 					if (!$order || ($order && !$order->isPaid)) {
 						$types[] = $type;
 					}

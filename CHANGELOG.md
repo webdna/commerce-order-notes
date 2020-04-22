@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.0.2 - 2020-04-22
+### Changed
+-	Value can now be a negative value
+-	UI updates
+-	Manual note can now be used on completed orders
+-	Notes that have a 0 value don't recalculate the order
+-	coupon code gets removed and reapplied when recalculating the order so any restictions are intact
+
+
 ## 2.0.1 - 2020-04-10
 ### Changed
 -	UI updates

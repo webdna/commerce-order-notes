@@ -83,7 +83,7 @@ class Install extends Migration
 					'userId' => $this->integer()->notNull(),
 					'comments' => $this->string()->notNull(),
 					'type' => $this->string(255)->notNull(),
-					'value' => $this->decimal(14, 4)->notNull()->unsigned(),
+					'value' => $this->decimal(14, 4)->notNull()->defaultValue(0),
 					'data' => $this->string()->notNull(),
 					'dateCreated' => $this->dateTime()->notNull(),
                     'dateUpdated' => $this->dateTime()->notNull(),
