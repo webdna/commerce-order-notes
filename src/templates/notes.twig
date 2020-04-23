@@ -55,9 +55,8 @@
 
 		var $notes = $('<div id="notesTab" class="hidden"></div>');
 			$notes.html(`
-			<p id="nonotes"{% if notes|length %} class="hidden"{% endif %}>
-			{{ "No notes exist yet."|t }}
-		</p>
+			
+		<div class="zilch {{ notes|length ? 'hidden' }}" id="nonotes"><p>No notes exist.</p></div>
 
 		{% if notes|length %}
 		<div class="vue-admin-table vue-admin-table-padded">
