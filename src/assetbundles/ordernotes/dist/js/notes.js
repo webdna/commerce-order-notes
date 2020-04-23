@@ -3,7 +3,7 @@ if (typeof Craft.Commerce === typeof undefined) {
 }
 
 (function () {
-	$('#notesTab').appendTo($('#content'));
+	//$('#notesTab').appendTo($('#content'));
 	/*var $tabs = $('#tabs ul li');
 	var $notesTab = $tabs.last().clone();
 	$notesTab
@@ -93,7 +93,7 @@ Craft.Commerce.OrderNoteModal = Garnish.Modal.extend({
 		this.$selectedStatus = $('.sel', this.$list);
 
 		// Build message input
-		this.$comments = $('<div class="field first">' + '<div class="heading">' + '<label class="required">' + Craft.t('commerce', 'Comments') + '</label>' + '<div class="instructions"><p>' + Craft.t('commerce', 'The reason for the note') + '.</p>' + '</div>' + '</div>' + '<div class="input ltr">' + '<textarea class="text fullwidth" rows="5" cols="50" name="comments"></textarea>' + '</div>' + '</div>').appendTo(this.$inputs);
+		this.$comments = $('<div class="field first">' + '<div class="heading">' + '<label class="required">' + Craft.t('commerce', 'Comments') + '</label>' + '<div class="instructions"><p>' + Craft.t('commerce', 'The reason for the note') + '.</p>' + '</div>' + '</div>' + '<div class="input ltr">' + '<textarea class="text fullwidth" rows="3" cols="50" name="comments"></textarea>' + '</div>' + '</div>').appendTo(this.$inputs);
 		this.$value = $('<div class="field">' + '<div class="heading">' + '<label class="required">' + Craft.t('commerce', 'Value') + '</label>' + '<div class="instructions"><p>' + Craft.t('commerce', 'The amount to discount from the order') + '.</p>' + '</div>' + '</div>' + '<div class="input ltr">' + '<input type="text" class="text fullwidth" name="value">' + '</div>' + '</div>');
 		this.$code = $('<div class="field">' + '<div class="heading">' + '<label class="required">' + Craft.t('commerce', 'Coupon Code') + '</label>' + '<div class="instructions"><p>' + Craft.t('commerce', 'The coupon code to add to the order') + '.</p>' + '</div>' + '</div>' + '<div class="input ltr">' + '<input type="text" class="text fullwidth" name="code">' + '</div>' + '</div>');
 		this.$qty = $('<div class="field">' + '<div class="heading">' + '<label>' + Craft.t('commerce', 'Items') + '</label></div>' + '<div class="input ltr">' + '<table class="data fullwidth"><tbody></tbody></table>' + '</div>' + '</div>');
@@ -113,7 +113,7 @@ Craft.Commerce.OrderNoteModal = Garnish.Modal.extend({
 
 		// Footer and buttons
 		var $footer = $('<div class="footer"/>').appendTo($container);
-		var $mainBtnGroup = $('<div class="btngroup right"/>').appendTo($footer);
+		var $mainBtnGroup = $('<div class="buttons right"/>').appendTo($footer);
 		this.$cancelBtn = $('<input type="button" class="btn" value="' + Craft.t('commerce', 'Cancel') + '"/>').appendTo($mainBtnGroup);
 		this.$saveBtn = $('<input type="button" class="btn submit" value="' + Craft.t('commerce', 'Save') + '"/>').appendTo($mainBtnGroup);
 
@@ -230,7 +230,7 @@ Craft.Commerce.OrderNoteModal = Garnish.Modal.extend({
 		// 	this.$comments.addClass('hidden');
 		// 	this.$email.appendTo(this.$inputs);
 		// }
-		console.log(this.updateSizeAndPosition)
+		//console.log(this.updateSizeAndPosition)
 		this.updateSizeAndPosition();
 	},
 

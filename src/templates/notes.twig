@@ -1,12 +1,14 @@
-<div style="display:none">
-<div id="notesTab" class="pane hidden">
-    <h3>{{ "Notes"|t('commerce') }}</h3>
-
+{# <div style="display:none"> #}
+{# <div id="notesTab" class="hidden">
 		<p id="nonotes"{% if notes|length %} class="hidden"{% endif %}>
 			{{ "No notes exist yet."|t }}
 		</p>
+
 		{% if notes|length %}
-        <table id="notes" class="data fullwidth collapsible">
+		<div class="vue-admin-table vue-admin-table-padded">
+		<div class="tableview">
+		<div class="tablepane vue-admin-tablepane">
+        <table id="notes" class="vuetable fullwidth data">
             <thead>
             <tr>
 				<th scope="col">{{ 'Date'|t('commerce') }}</th>
@@ -17,7 +19,7 @@
                 <th class="thin"></th>
             </tr>
             </thead>
-            <tbody>
+            <tbody class="vuetable-body">
                 {% for note in notes %}
                     <tr data-id="{{ note.id }}" data-name="{{ 'Note of {date}'|t({ date: note.dateCreated|date('d-m-Y H:i:s') }) }}">
 						<th scope="row" data-title="{{ 'Date'|t }}">{{ note.dateCreated|date('d-m-Y H:i:s') }}</th>
@@ -34,19 +36,77 @@
                 {% endfor %}
                 </tbody>
         </table>
+		</div>
+		</div>
+		</div>
 		{% endif %}
 
     
         <div class="footer">
-            <a class="btn submit" id="new-note" data-order-id="{{ order.id }}">New Note</a>
+            <a class="btn" id="new-note" data-order-id="{{ order.id }}">New Note</a>
         </div>
     
 
-</div>
-</div>
+</div> #}
+{# </div> #}
 
 {% js %}
     $(document).ready(function () {
+
+		var $notes = $('<div id="notesTab" class="hidden"></div>');
+			$notes.html(`
+			<p id="nonotes"{% if notes|length %} class="hidden"{% endif %}>
+			{{ "No notes exist yet."|t }}
+		</p>
+
+		{% if notes|length %}
+		<div class="vue-admin-table vue-admin-table-padded">
+		<div class="tableview">
+		<div class="tablepane vue-admin-tablepane">
+        <table id="notes" class="vuetable fullwidth data">
+            <thead>
+            <tr>
+				<th scope="col">{{ 'Date'|t('commerce') }}</th>
+                <th scope="col">{{ 'Comment'|t('commerce') }}</th>
+                <th scope="col">{{ 'Type'|t('commerce') }}</th>
+				<th scope="col">{{ 'Value'|t('commerce') }}</th>
+                <th scope="col">{{ 'User'|t('commerce') }}</th>
+                <th class="thin"></th>
+            </tr>
+            </thead>
+            <tbody class="vuetable-body">
+                {% for note in notes %}
+                    <tr data-id="{{ note.id }}" data-name="{{ 'Note of {date}'|t({ date: note.dateCreated|date('d-m-Y H:i:s') }) }}">
+						<th scope="row" data-title="{{ 'Date'|t }}">{{ note.dateCreated|date('d-m-Y H:i:s') }}</th>
+						<td data-title="{{ 'Comments'|t }}">{{ note.getComments()|raw|nl2br }}</td>
+						<td data-title="{{ 'Type'|t }}">{{ note.name }}</td>
+						<td data-title="{{ 'Value'|t }}">{{ note.getValue(order.paymentCurrency) }}</td>
+						<td data-title="{{ 'User'|t }}">{{ note.user.fullname }}</td>
+						<td class="thin">
+						{% if currentUser.can('ordernotes_action_delete') and note.type != 'refund' %}
+							<a class="delete icon" title="{{ 'Delete'|t }}" role="button"></a>
+						{% endif %}
+						</td>
+					</tr>
+                {% endfor %}
+                </tbody>
+        </table>
+		</div>
+		</div>
+		</div>
+		{% endif %}
+
+    
+        <div class="footer">
+            <a class="btn" id="new-note" data-order-id="{{ order.id }}">New Note</a>
+        </div>
+			`)
+
+		$notes.appendTo($('#content'));
+
+		if (document.location.hash == '#notesTab') {
+			$notes.removeClass('hidden');
+		}
 
 		new Craft.AdminTable({
 			tableSelector: '#notes',

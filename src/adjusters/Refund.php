@@ -58,14 +58,14 @@ class Refund extends Component implements AdjusterInterface
 		{
 			if ($transaction->type == 'refund' && $transaction->status == 'success') {
 				//Craft::dd($order);
-				$adjustment = new OrderAdjustment();
+				/*$adjustment = new OrderAdjustment();
 				$adjustment->type = self::ADJUSTMENT_TYPE;
 				$adjustment->name = $transaction->note;
 				$adjustment->orderId = $order->id;
 				$adjustment->description = $transaction->note;
 				$adjustment->amount = 0-($transaction->amount);
 		
-				$adjustments[] = $adjustment;
+				$adjustments[] = $adjustment;*/
 			}
 		}
 
