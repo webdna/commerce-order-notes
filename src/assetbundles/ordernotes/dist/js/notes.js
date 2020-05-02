@@ -151,7 +151,7 @@ Craft.Commerce.OrderNoteModal = Garnish.Modal.extend({
 			name: 'product',
 			elementType: 'craft\\commerce\\elements\\Variant',
 			sources: null,
-			criteria: { hasStock: true },
+			criteria: { hasStock: true, hasProduct: { 'availableForPurchase': true } },
 			sourceElementId: null,
 			viewMode: 'list',
 			limit: null,

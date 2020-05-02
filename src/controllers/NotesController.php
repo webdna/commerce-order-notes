@@ -83,7 +83,13 @@ class NotesController extends Controller
 
 		$model->afterSave();
 //Craft::dd(count($model->order->lineItems));
-		OrderNotes::$plugin->notes->updateOrder($model->order, $model->value != 0);
+		$recalc = true;
+		if ($model->type == 'kuriousagency\\commerce\\ordernotes\\models\\Note' || $model->type == 'kuriousagency\\commerce\\ordernotes\\models\\Email') {
+			$recalc = false;
+		}
+		//Craft::dd($recalc);
+
+		OrderNotes::$plugin->notes->updateOrder($model->order, $recalc);
 
 		return $this->asJson(['success'=>true]);
 	}
