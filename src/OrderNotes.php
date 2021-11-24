@@ -166,7 +166,7 @@ class OrderNotes extends Plugin
 		Craft::$app->view->hook('cp.commerce.order.edit', function(array &$context) {
 			$view = Craft::$app->getView();
 			//Craft::dd($context);
-			$context['tabs'][] = [
+			$context['tabs']['notes'] = [
 				'label' => 'Notes',
 				'url' => '#notesTab',
 				'class' => null
