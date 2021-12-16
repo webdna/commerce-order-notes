@@ -96,7 +96,7 @@ class Note extends Model
 		
 		if ($currency) {
 			$currency = Commerce::getInstance()->getPaymentCurrencies()->getPaymentCurrencyByIso($currency);
-			$value = Craft::$app->getFormatter()->asCurrency($this->value, $currency, [], [], false);
+			$value = Craft::$app->getFormatter()->asCurrency($this->value, $currency->iso, [], [], false);
 		}
 		
 		return $value;
