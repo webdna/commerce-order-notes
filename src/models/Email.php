@@ -4,13 +4,13 @@
  *
  * Add notes to an order, they can also affect price.
  *
- * @link      https://kurious.agency
- * @copyright Copyright (c) 2018 Kurious Agency
+ * @link      https://webdna.co.uk
+ * @copyright Copyright (c) 2018 webdna
  */
 
-namespace kuriousagency\commerce\ordernotes\models;
+namespace webdna\commerce\ordernotes\models;
 
-use kuriousagency\commerce\ordernotes\OrderNotes;
+use webdna\commerce\ordernotes\OrderNotes;
 use craft\elements\User;
 use craft\commerce\elements\Order;
 use craft\commerce\Plugin as Commerce;
@@ -19,7 +19,7 @@ use Craft;
 use craft\base\Model;
 
 /**
- * @author    Kurious Agency
+ * @author    webdna
  * @package   CommerceOrderNotes
  * @since     1.0.0
  */
@@ -30,40 +30,34 @@ class Email extends Note
 
 
     // Public Methods
-	// =========================================================================
-	public function getName()
-	{
-		return 'Change Email';
-	}
-	
-	public function getProperties()
-	{
-		// available: comments, value, qty, code, email, add
-		return ['comments', 'email'];
-	}
+    // =========================================================================
+    public function getName(): string
+    {
+        return 'Change Email';
+    }
 
-	public function getValue($currency=false)
-	{
-		return 0;
-	}
+    public function getProperties(): array
+    {
+        // available: comments, value, qty, code, email, add
+        return ['comments', 'email'];
+    }
 
+    public function getValue(string $currency = ''): string
+    {
+        return '';
+    }
 
+    public function afterSave(): void
+    {
+        $this->getOrder()->email = $this->getData()->email;
+    }
 
-	public function afterSave()
-	{
-		$this->getOrder()->email = $this->getData()->email;
-	}
+    public function afterDelete(): void
+    {
+        $this->getOrder()->email = $this->getData()->oldEmail;
+    }
 
-	public function afterDelete()
-	{
-		$this->getOrder()->email = $this->getData()->oldEmail;
-	}
-	
-
-    /**
-     * @inheritdoc
-     */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['orderId', 'userId', 'type', 'data'], 'required'],

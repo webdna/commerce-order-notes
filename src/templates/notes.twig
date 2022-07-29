@@ -41,11 +41,11 @@
 		</div>
 		{% endif %}
 
-    
+
         <div class="footer">
             <a class="btn" id="new-note" data-order-id="{{ order.id }}">New Note</a>
         </div>
-    
+
 
 </div> #}
 {# </div> #}
@@ -55,7 +55,7 @@
 
 		var $notes = $('<div id="notesTab" class="hidden"></div>');
 			$notes.html(`
-			
+
 		<div class="zilch {{ notes|length ? 'hidden' }}" id="nonotes"><p>No notes exist.</p></div>
 
 		{% if notes|length %}
@@ -95,7 +95,7 @@
 		</div>
 		{% endif %}
 
-    
+
         <div class="footer">
             <a class="btn" id="new-note" data-order-id="{{ order.id }}">New Note</a>
         </div>

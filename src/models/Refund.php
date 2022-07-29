@@ -4,13 +4,13 @@
  *
  * Add notes to an order, they can also affect price.
  *
- * @link      https://kurious.agency
- * @copyright Copyright (c) 2018 Kurious Agency
+ * @link      https://webdna.co.uk
+ * @copyright Copyright (c) 2018 webdna
  */
 
-namespace kuriousagency\commerce\ordernotes\models;
+namespace webdna\commerce\ordernotes\models;
 
-use kuriousagency\commerce\ordernotes\OrderNotes;
+use webdna\commerce\ordernotes\OrderNotes;
 use craft\elements\User;
 use craft\commerce\elements\Order;
 
@@ -18,7 +18,7 @@ use Craft;
 use craft\base\Model;
 
 /**
- * @author    Kurious Agency
+ * @author    webdna
  * @package   CommerceOrderNotes
  * @since     1.0.0
  */
@@ -29,23 +29,19 @@ class Refund extends Note
 
 
     // Public Methods
-	// =========================================================================
+    // =========================================================================
 
-	public function getName()
-	{
-		return 'Refund';
-	}
-	
-	public function afterValidate()
-	{
-		
-	}
-	
+    public function getName(): string
+    {
+        return 'Refund';
+    }
 
-    /**
-     * @inheritdoc
-     */
-    public function rules()
+    public function afterValidate(): void
+    {
+
+    }
+
+    public function rules(): array
     {
         return [
             [['orderId', 'userId', 'comments', 'type', 'value'], 'required'],

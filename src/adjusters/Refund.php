@@ -4,13 +4,13 @@
  *
  * Adds promotions
  *
- * @link      https://kurious.agency
- * @copyright Copyright (c) 2018 Kurious Agency
+ * @link      https://webdna.co.uk
+ * @copyright Copyright (c) 2018 webdna
  */
 
-namespace kuriousagency\commerce\ordernotes\adjusters;
+namespace webdna\commerce\ordernotes\adjusters;
 
-use kuriousagency\commerce\ordernotes\OrderNotes;
+use webdna\commerce\ordernotes\OrderNotes;
 
 use Craft;
 use craft\base\Component;
@@ -52,22 +52,22 @@ class Refund extends Component implements AdjusterInterface
      */
     public function adjust(Order $order): array
     {
-		$adjustments = [];
+        $adjustments = [];
 
-		foreach ($order->getTransactions() as $transaction)
-		{
-			if ($transaction->type == 'refund' && $transaction->status == 'success') {
-				//Craft::dd($order);
-				/*$adjustment = new OrderAdjustment();
-				$adjustment->type = self::ADJUSTMENT_TYPE;
-				$adjustment->name = $transaction->note;
-				$adjustment->orderId = $order->id;
-				$adjustment->description = $transaction->note;
-				$adjustment->amount = 0-($transaction->amount);
-		
-				$adjustments[] = $adjustment;*/
-			}
-		}
+        foreach ($order->getTransactions() as $transaction)
+        {
+            if ($transaction->type == 'refund' && $transaction->status == 'success') {
+                //Craft::dd($order);
+                /*$adjustment = new OrderAdjustment();
+                $adjustment->type = self::ADJUSTMENT_TYPE;
+                $adjustment->name = $transaction->note;
+                $adjustment->orderId = $order->id;
+                $adjustment->description = $transaction->note;
+                $adjustment->amount = 0-($transaction->amount);
+
+                $adjustments[] = $adjustment;*/
+            }
+        }
 
         return $adjustments;
     }

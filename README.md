@@ -1,10 +1,10 @@
-# Commerce Order Notes plugin for Craft CMS 3.x
+# Commerce Order Notes plugin for Craft CMS 4.x
 
 Add notes to an order, they can also affect price.
 
 ## Requirements
 
-This plugin requires Craft CMS 3.0.0 or later.
+This plugin requires Craft CMS 4 and Craft Commerce 4.
 
 ## Installation
 
@@ -23,7 +23,7 @@ Open your terminal and run the following commands:
 cd /path/to/my-project
 
 # tell Composer to load the plugin
-composer require kuriousagency/commerce-order-notes
+composer require webdna/commerce-order-notes
 
 # tell Craft to install the plugin
 ./craft install/plugin commerce-order-notes
@@ -88,10 +88,5 @@ User permissions for each note type can be set.
 
 <img src="./resources/img/Screenshot-9.png" />
 
-## Commerce Order Notes Roadmap
 
-Some things to do, and ideas for potential features:
-
--   Release it
-
-Brought to you by [Kurious Agency](https://kurious.agency)
+Brought to you by [webdna](https://webdna.co.uk)

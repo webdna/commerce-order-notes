@@ -4,13 +4,13 @@
  *
  * Adds promotions
  *
- * @link      https://kurious.agency
- * @copyright Copyright (c) 2018 Kurious Agency
+ * @link      https://webdna.co.uk
+ * @copyright Copyright (c) 2018 webdna
  */
 
-namespace kuriousagency\commerce\ordernotes\adjusters;
+namespace webdna\commerce\ordernotes\adjusters;
 
-use kuriousagency\commerce\ordernotes\OrderNotes;
+use webdna\commerce\ordernotes\OrderNotes;
 
 use Craft;
 use craft\base\Component;
@@ -52,22 +52,22 @@ class Manual extends Component implements AdjusterInterface
      */
     public function adjust(Order $order): array
     {
-		$adjustments = [];
-        
-		foreach (OrderNotes::$plugin->notes->getNotesByOrderId($order->id) as $note)
-		{
-			$handle = (new \ReflectionClass($note->type))->getShortName();
-			if ($handle == 'Manual') {
-				$adjustment = new OrderAdjustment();
-				$adjustment->type = self::ADJUSTMENT_TYPE;
-				$adjustment->name = $note->name;
-				$adjustment->orderId = $order->id;
-				$adjustment->description = $note->comments;
-				$adjustment->amount = 0-($note->value);
-		
-				$adjustments[] = $adjustment;
-			}
-		}
+        $adjustments = [];
+
+        foreach (OrderNotes::$plugin->notes->getNotesByOrderId($order->id) as $note)
+        {
+            $handle = (new \ReflectionClass($note->type))->getShortName();
+            if ($handle == 'Manual') {
+                $adjustment = new OrderAdjustment();
+                $adjustment->type = self::ADJUSTMENT_TYPE;
+                $adjustment->name = $note->name;
+                $adjustment->orderId = $order->id;
+                $adjustment->description = $note->comments;
+                $adjustment->amount = 0-($note->value);
+
+                $adjustments[] = $adjustment;
+            }
+        }
         return $adjustments;
     }
 }

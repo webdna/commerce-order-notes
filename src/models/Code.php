@@ -4,13 +4,13 @@
  *
  * Add notes to an order, they can also affect price.
  *
- * @link      https://kurious.agency
- * @copyright Copyright (c) 2018 Kurious Agency
+ * @link      https://webdna.co.uk
+ * @copyright Copyright (c) 2018 webdna
  */
 
-namespace kuriousagency\commerce\ordernotes\models;
+namespace webdna\commerce\ordernotes\models;
 
-use kuriousagency\commerce\ordernotes\OrderNotes;
+use webdna\commerce\ordernotes\OrderNotes;
 use craft\elements\User;
 use craft\commerce\elements\Order;
 
@@ -18,37 +18,34 @@ use Craft;
 use craft\base\Model;
 
 /**
- * @author    Kurious Agency
+ * @author    webdna
  * @package   CommerceOrderNotes
  * @since     1.0.0
  */
 class Code extends Note
 {
-	// Public Properties
+    // Public Properties
     // =========================================================================
 
     // Public Methods
-	// =========================================================================
-	public function getName()
-	{
-		return 'Discount Code';
-	}
-	
-	public function getProperties()
-	{
-		// available: comments, value, qty, code, email, add
-		return ['comments', 'code'];
-	}
+    // =========================================================================
+    public function getName(): string
+    {
+        return 'Discount Code';
+    }
 
-	public function getValue($currency=false)
-	{
-		return $this->getData()->code;
-	}
+    public function getProperties(): array
+    {
+        // available: comments, value, qty, code, email, add
+        return ['comments', 'code'];
+    }
 
-    /**
-     * @inheritdoc
-     */
-    public function rules()
+    public function getValue(string $currency = ''): string
+    {
+        return $this->getData()->code;
+    }
+
+    public function rules(): array
     {
         return [
             [['orderId', 'userId', 'comments', 'type', 'value', 'data'], 'required'],

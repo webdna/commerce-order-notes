@@ -1,8 +1,8 @@
 {
-	"name": "kuriousagency/commerce-order-notes",
+	"name": "webdna/commerce-order-notes",
 	"description": "Add notes to an order, they can also affect price.",
 	"type": "craft-plugin",
-	"version": "2.0.7",
+	"version": "3.0.0",
 	"keywords": [
 		"craft",
 		"cms",
@@ -11,23 +11,23 @@
 		"commerce order notes"
 	],
 	"support": {
-		"docs": "https://github.com/KuriousAgency/commerce-order-notes/commerce-order-notes/blob/master/README.md",
-		"issues": "https://github.com/KuriousAgency/commerce-order-notes/commerce-order-notes/issues"
+		"docs": "https://github.com/webdna/commerce-order-notes/blob/master/README.md",
+		"issues": "https://github.com/webdna/commerce-order-notes/issues"
 	},
 	"license": "proprietary",
 	"authors": [
 		{
-			"name": "Kurious Agency",
-			"homepage": "https://kurious.agency"
+			"name": "webdna",
+			"homepage": "https://webdna.co.uk"
 		}
 	],
 	"require": {
-		"craftcms/cms": "^3.4",
-		"craftcms/commerce": "^3.0"
+		"craftcms/cms": "^4.0",
+		"craftcms/commerce": "^4.0"
 	},
 	"autoload": {
 		"psr-4": {
-			"kuriousagency\\commerce\\ordernotes\\": "src/"
+			"webdna\\commerce\\ordernotes\\": "src/"
 		}
 	},
 	"extra": {
@@ -35,10 +35,10 @@
 		"handle": "commerce-order-notes",
 		"hasCpSettings": false,
 		"hasCpSection": false,
-		"changelogUrl": "https://raw.githubusercontent.com/KuriousAgency/commerce-order-notes/commerce-order-notes/master/CHANGELOG.md",
+		"changelogUrl": "https://raw.githubusercontent.com/webdna/commerce-order-notes/master/CHANGELOG.md",
 		"components": {
-			"notes": "kuriousagency\\commerce\\ordernotes\\services\\Notes"
+			"notes": "webdna\\commerce\\ordernotes\\services\\Notes"
 		},
-		"class": "kuriousagency\\commerce\\ordernotes\\OrderNotes"
+		"class": "webdna\\commerce\\ordernotes\\OrderNotes"
 	}
 }

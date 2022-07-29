@@ -4,18 +4,18 @@
  *
  * Add notes to an order, they can also affect price.
  *
- * @link      https://kurious.agency
- * @copyright Copyright (c) 2018 Kurious Agency
+ * @link      https://webdna.co.uk
+ * @copyright Copyright (c) 2018 webdna
  */
 
-namespace kuriousagency\commerce\ordernotes\assetbundles\ordernotes;
+namespace webdna\commerce\ordernotes\assetbundles\ordernotes;
 
 use Craft;
 use craft\web\AssetBundle;
 use craft\web\assets\cp\CpAsset;
 
 /**
- * @author    Kurious Agency
+ * @author    webdna
  * @package   CommerceOrderNotes
  * @since     1.0.0
  */
@@ -24,9 +24,9 @@ class OrderNotesAsset extends AssetBundle
     // Public Methods
     // =========================================================================
 
-	public function init()
+	public function init(): void
     {
-        $this->sourcePath = "@kuriousagency/commerce/ordernotes/assetbundles/ordernotes/dist";
+        $this->sourcePath = "@webdna/commerce/ordernotes/assetbundles/ordernotes/dist";
 
         $this->depends = [
             CpAsset::class,

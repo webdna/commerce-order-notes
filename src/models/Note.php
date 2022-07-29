@@ -4,22 +4,23 @@
  *
  * Add notes to an order, they can also affect price.
  *
- * @link      https://kurious.agency
- * @copyright Copyright (c) 2018 Kurious Agency
+ * @link      https://webdna.co.uk
+ * @copyright Copyright (c) 2018 webdna
  */
 
-namespace kuriousagency\commerce\ordernotes\models;
+namespace webdna\commerce\ordernotes\models;
 
-use kuriousagency\commerce\ordernotes\OrderNotes;
+use webdna\commerce\ordernotes\OrderNotes;
 use craft\elements\User;
 use craft\commerce\elements\Order;
 use craft\commerce\Plugin as Commerce;
 
 use Craft;
 use craft\base\Model;
+use DateTime;
 
 /**
- * @author    Kurious Agency
+ * @author    webdna
  * @package   CommerceOrderNotes
  * @since     1.0.0
  */
@@ -28,105 +29,98 @@ class Note extends Model
     // Public Properties
     // =========================================================================
 
-    /**
-     * @var string
-     */
-	public $id;
-	public $orderId;
-	public $userId;
-	public $comments;
-	public $type;
-	public $value;
-	public $data;
-	public $dateCreated;
-	public $dateUpdated;
-	public $uid;
+    public ?int $id = null;
+    public ?int $orderId = null;
+    public ?int $userId = null;
+    public ?string $comments = '';
+    public ?string $type = '';
+    public ?string $value = '';
+    public mixed $data = null;
+    public ?DateTime $dateCreated = null;
+    public ?DateTime $dateUpdated = null;
+    public ?string $uid = null;
 
-	private $_order;
+    private ?Order $_order = null;
 
     // Public Methods
-	// =========================================================================
-	
-	public function getUser()
-	{
-		return User::find()->anyStatus()->id($this->userId)->one();
-	}
+    // =========================================================================
 
-	public function getOrder()
-	{
-		if (!$this->_order) {
-			if (!$this->orderId) {
-				return null;
-			}
-			$this->_order = Order::findOne($this->orderId);
-		}
+    public function getUser(): User
+    {
+        return User::find()->status(null)->id($this->userId)->one();
+    }
 
-		return $this->_order;
-	}
+    public function getOrder(): Order
+    {
+        if (!$this->_order) {
+            if (!$this->orderId) {
+                return null;
+            }
+            $this->_order = Order::findOne($this->orderId);
+        }
 
-	public function getName()
-	{
-		return 'Note';
-	}
+        return $this->_order;
+    }
 
-	public function getProperties()
-	{
-		// available: comments, value, qty, code, email, add
-		return ['comments'];
-	}
+    public function getName(): string
+    {
+        return 'Note';
+    }
 
-	public function getComments()
-	{
-		return $this->comments;
-	}
+    public function getProperties(): array
+    {
+        // available: comments, value, qty, code, email, add
+        return ['comments'];
+    }
 
-	public function getData()
-	{
-		if (is_array($this->data)) {
-			//Craft::dd((object) $this->data);
-			$this->data = json_encode($this->data);
-			//return (object) $this->data;
-		}
-		return json_decode($this->data);
-	}
+    public function getComments(): string
+    {
+        return $this->comments;
+    }
 
-	public function getValue($currency=false)
-	{
-		$value = $this->value;
-		
-		if ($currency) {
-			$currency = Commerce::getInstance()->getPaymentCurrencies()->getPaymentCurrencyByIso($currency);
-			$value = Craft::$app->getFormatter()->asCurrency($this->value, $currency->iso, [], [], false);
-		}
-		
-		return $value;
-	}
+    public function getData(): mixed
+    {
+        if (is_array($this->data)) {
+            //Craft::dd((object) $this->data);
+            $this->data = json_encode($this->data);
+            //return (object) $this->data;
+        }
+        return json_decode($this->data);
+    }
 
-	public function afterValidate()
-	{
-		foreach ($this->data as $key => $item)
-		{
-			if ($item == '') {
-				$this->addError($key, ucfirst($key)." cannot be blank.");
-			}
-		}
-	}
+    public function getValue(string $currency = ''): string
+    {
+        $value = $this->value;
 
-	public function afterSave()
-	{
+        if ($currency) {
+            $currency = Commerce::getInstance()->getPaymentCurrencies()->getPaymentCurrencyByIso($currency);
+            $value = Craft::$app->getFormatter()->asCurrency($this->value, $currency->iso, [], [], false);
+        }
 
-	}
+        return $value;
+    }
 
-	public function afterDelete()
-	{
+    public function afterValidate(): void
+    {
+        foreach ($this->data as $key => $item)
+        {
+            if ($item == '') {
+                $this->addError($key, ucfirst($key)." cannot be blank.");
+            }
+        }
+    }
 
-	}
-	
+    public function afterSave(): void
+    {
 
-    /**
-     * @inheritdoc
-     */
-    public function rules()
+    }
+
+    public function afterDelete(): void
+    {
+
+    }
+
+    public function rules(): array
     {
         return [
             [['orderId', 'userId', 'comments', 'type'], 'required'],

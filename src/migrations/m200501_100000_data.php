@@ -4,20 +4,20 @@
  *
  * Add notes to an order, they can also affect price.
  *
- * @link      https://kurious.agency
- * @copyright Copyright (c) 2018 Kurious Agency
+ * @link      https://webdna.co.uk
+ * @copyright Copyright (c) 2018 webdna
  */
 
-namespace kuriousagency\commerce\ordernotes\migrations;
+namespace webdna\commerce\ordernotes\migrations;
 
-use kuriousagency\commerce\ordernotes\OrderNotes;
+use webdna\commerce\ordernotes\OrderNotes;
 
 use Craft;
 use craft\config\DbConfig;
 use craft\db\Migration;
 
 /**
- * @author    Kurious Agency
+ * @author    webdna
  * @package   CommerceOrderNotes
  * @since     1.0.0
  */
@@ -33,17 +33,17 @@ class m200501_100000_data extends Migration
     /**
      * @inheritdoc
      */
-    public function safeUp()
+    public function safeUp(): void
     {
         $this->alterColumn('{{%commerce_ordernotes}}', 'data', $this->text());
     }
 
-   /**
+    /**
      * @inheritdoc
      */
-    public function safeDown()
+    public function safeDown(): bool
     {
-		echo "m200501_100000_data cannot be reverted.\n";
+        echo "m200501_100000_data cannot be reverted.\n";
         return false;
     }
 

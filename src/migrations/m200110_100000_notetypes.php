@@ -4,20 +4,20 @@
  *
  * Add notes to an order, they can also affect price.
  *
- * @link      https://kurious.agency
- * @copyright Copyright (c) 2018 Kurious Agency
+ * @link      https://webdna.co.uk
+ * @copyright Copyright (c) 2018 webdna
  */
 
-namespace kuriousagency\commerce\ordernotes\migrations;
+namespace webdna\commerce\ordernotes\migrations;
 
-use kuriousagency\commerce\ordernotes\OrderNotes;
+use webdna\commerce\ordernotes\OrderNotes;
 
 use Craft;
 use craft\config\DbConfig;
 use craft\db\Migration;
 
 /**
- * @author    Kurious Agency
+ * @author    webdna
  * @package   CommerceOrderNotes
  * @since     1.0.0
  */
@@ -33,45 +33,45 @@ class m200110_100000_notetypes extends Migration
     /**
      * @inheritdoc
      */
-    public function safeUp()
+    public function safeUp(): void
     {
         $this->update('{{%commerce_ordernotes}}', [
-			'type' => 'kuriousagency\commerce\ordernotes\models\Note',
-		], [
-			'type' => 'note',
-		]);
-		
-		$this->update('{{%commerce_ordernotes}}', [
-			'type' => 'kuriousagency\commerce\ordernotes\models\Add',
-		], [
-			'type' => 'add',
-		]);
+            'type' => 'webdna\commerce\ordernotes\models\Note',
+        ], [
+            'type' => 'note',
+        ]);
 
-		$this->update('{{%commerce_ordernotes}}', [
-			'type' => 'kuriousagency\commerce\ordernotes\models\Qty',
-		], [
-			'type' => 'qty',
-		]);
+        $this->update('{{%commerce_ordernotes}}', [
+            'type' => 'webdna\commerce\ordernotes\models\Add',
+        ], [
+            'type' => 'add',
+        ]);
 
-		$this->update('{{%commerce_ordernotes}}', [
-			'type' => 'kuriousagency\commerce\ordernotes\models\Code',
-		], [
-			'type' => 'code',
-		]);
+        $this->update('{{%commerce_ordernotes}}', [
+            'type' => 'webdna\commerce\ordernotes\models\Qty',
+        ], [
+            'type' => 'qty',
+        ]);
 
-		$this->update('{{%commerce_ordernotes}}', [
-			'type' => 'kuriousagency\commerce\ordernotes\models\Manual',
-		], [
-			'type' => 'manual',
-		]);
+        $this->update('{{%commerce_ordernotes}}', [
+            'type' => 'webdna\commerce\ordernotes\models\Code',
+        ], [
+            'type' => 'code',
+        ]);
+
+        $this->update('{{%commerce_ordernotes}}', [
+            'type' => 'webdna\commerce\ordernotes\models\Manual',
+        ], [
+            'type' => 'manual',
+        ]);
     }
 
-   /**
+    /**
      * @inheritdoc
      */
-    public function safeDown()
+    public function safeDown(): bool
     {
-		echo "m200110_100000_notetypes cannot be reverted.\n";
+    echo "m200110_100000_notetypes cannot be reverted.\n";
         return false;
     }
 

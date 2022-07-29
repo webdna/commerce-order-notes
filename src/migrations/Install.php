@@ -4,20 +4,20 @@
  *
  * Add notes to an order, they can also affect price.
  *
- * @link      https://kurious.agency
- * @copyright Copyright (c) 2018 Kurious Agency
+ * @link      https://webdna.co.uk
+ * @copyright Copyright (c) 2018 webdna
  */
 
-namespace kuriousagency\commerce\ordernotes\migrations;
+namespace webdna\commerce\ordernotes\migrations;
 
-use kuriousagency\commerce\ordernotes\OrderNotes;
+use webdna\commerce\ordernotes\OrderNotes;
 
 use Craft;
 use craft\config\DbConfig;
 use craft\db\Migration;
 
 /**
- * @author    Kurious Agency
+ * @author    webdna
  * @package   CommerceOrderNotes
  * @since     1.0.0
  */
@@ -29,7 +29,7 @@ class Install extends Migration
     /**
      * @var string The database driver to use
      */
-    public $driver;
+    public string $driver;
 
     // Public Methods
     // =========================================================================
@@ -37,7 +37,7 @@ class Install extends Migration
     /**
      * @inheritdoc
      */
-    public function safeUp()
+    public function safeUp(): bool
     {
         $this->driver = Craft::$app->getConfig()->getDb()->driver;
         if ($this->createTables()) {
@@ -54,7 +54,7 @@ class Install extends Migration
    /**
      * @inheritdoc
      */
-    public function safeDown()
+    public function safeDown(): bool
     {
         $this->driver = Craft::$app->getConfig()->getDb()->driver;
         $this->removeTables();
@@ -68,7 +68,7 @@ class Install extends Migration
     /**
      * @return bool
      */
-    protected function createTables()
+    protected function createTables(): bool
     {
         $tablesCreated = false;
 
@@ -79,13 +79,13 @@ class Install extends Migration
                 '{{%commerce_ordernotes}}',
                 [
                     'id' => $this->primaryKey(),
-					'orderId' => $this->integer()->notNull(),
-					'userId' => $this->integer()->notNull(),
-					'comments' => $this->string()->notNull(),
-					'type' => $this->string(255)->notNull(),
-					'value' => $this->decimal(14, 4)->notNull()->defaultValue(0),
-					'data' => $this->string()->notNull(),
-					'dateCreated' => $this->dateTime()->notNull(),
+                    'orderId' => $this->integer()->notNull(),
+                    'userId' => $this->integer()->notNull(),
+                    'comments' => $this->string()->notNull(),
+                    'type' => $this->string(255)->notNull(),
+                    'value' => $this->decimal(14, 4)->notNull()->defaultValue(0),
+                    'data' => $this->string()->notNull(),
+                    'dateCreated' => $this->dateTime()->notNull(),
                     'dateUpdated' => $this->dateTime()->notNull(),
                     'uid' => $this->uid(),
                 ]
@@ -98,7 +98,7 @@ class Install extends Migration
     /**
      * @return void
      */
-    protected function createIndexes()
+    protected function createIndexes(): void
     {
         $this->createIndex(
             $this->db->getIndexName(
@@ -109,8 +109,8 @@ class Install extends Migration
             '{{%commerce_ordernotes}}',
             'orderId',
             false
-		);
-		$this->createIndex(
+        );
+        $this->createIndex(
             $this->db->getIndexName(
                 '{{%commerce_ordernotes}}',
                 'userId',
@@ -119,7 +119,7 @@ class Install extends Migration
             '{{%commerce_ordernotes}}',
             'userId',
             false
-		);
+        );
         // Additional commands depending on the db driver
         switch ($this->driver) {
             case DbConfig::DRIVER_MYSQL:
@@ -132,23 +132,23 @@ class Install extends Migration
     /**
      * @return void
      */
-    protected function addForeignKeys()
+    protected function addForeignKeys(): void
     {
-		$this->addForeignKey(null, '{{%commerce_ordernotes}}', ['userId'], '{{%users}}', ['id'], null, 'CASCADE');
-		$this->addForeignKey(null, '{{%commerce_ordernotes}}', ['orderId'], '{{%commerce_orders}}', ['id'], 'CASCADE', 'CASCADE');
+        $this->addForeignKey(null, '{{%commerce_ordernotes}}', ['userId'], '{{%users}}', ['id'], null, 'CASCADE');
+        $this->addForeignKey(null, '{{%commerce_ordernotes}}', ['orderId'], '{{%commerce_orders}}', ['id'], 'CASCADE', 'CASCADE');
     }
 
     /**
      * @return void
      */
-    protected function insertDefaultData()
+    protected function insertDefaultData(): void
     {
     }
 
     /**
      * @return void
      */
-    protected function removeTables()
+    protected function removeTables(): void
     {
         $this->dropTableIfExists('{{%commerce_ordernotes}}');
     }

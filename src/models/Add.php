@@ -4,13 +4,13 @@
  *
  * Add notes to an order, they can also affect price.
  *
- * @link      https://kurious.agency
- * @copyright Copyright (c) 2018 Kurious Agency
+ * @link      https://webdna.co.uk
+ * @copyright Copyright (c) 2018 webdna
  */
 
-namespace kuriousagency\commerce\ordernotes\models;
+namespace webdna\commerce\ordernotes\models;
 
-use kuriousagency\commerce\ordernotes\OrderNotes;
+use webdna\commerce\ordernotes\OrderNotes;
 use craft\elements\User;
 use craft\commerce\elements\Order;
 use craft\commerce\Plugin as Commerce;
@@ -19,7 +19,7 @@ use Craft;
 use craft\base\Model;
 
 /**
- * @author    Kurious Agency
+ * @author    webdna
  * @package   CommerceOrderNotes
  * @since     1.0.0
  */
@@ -31,71 +31,66 @@ class Add extends Note
 
 
     // Public Methods
-	// =========================================================================
-	public function getName()
-	{
-		return 'Add Product';
-	}
-	
-	public function getProperties()
-	{
-		// available: comments, value, qty, code, email, add
-		return ['comments', 'add'];
-	}
+    // =========================================================================
+    public function getName(): string
+    {
+        return 'Add Product';
+    }
 
-	public function getValue($currency=false)
-	{
-		return '';
-	}
+    public function getProperties(): array
+    {
+        // available: comments, value, qty, code, email, add
+        return ['comments', 'add'];
+    }
 
-	public function getComments()
-	{
-		$result = $this->comments."\n";
-		foreach ($this->getData()->add as $item)
-		{
-			$result .= "Added: $item->qty x $item->label\n";
-		}
-		return $result;
-	}
+    public function getValue(string $currency = ''): string
+    {
+        return '';
+    }
 
-	public function afterValidate()
-	{
-		if (!$this->getData() || !count($this->getData()->add)) {
-			$this->addError('add', "Please select a product");
-		}
-	}
+    public function getComments(): string
+    {
+        $result = $this->comments."\n";
+        foreach ($this->getData()->add as $item)
+        {
+            $result .= "Added: $item->qty x $item->label\n";
+        }
+        return $result;
+    }
 
-	public function afterSave()
-	{
-		foreach ($this->getData()->add as $item)
-		{
-			$purchasableId = $item->id;
-			$note = '';
-			$options = [];
-			$qty = $item->qty;
+    public function afterValidate(): void
+    {
+        if (!$this->getData() || !count($this->getData()->add)) {
+            $this->addError('add', "Please select a product");
+        }
+    }
 
-			$lineItem = Commerce::getInstance()->getLineItems()->resolveLineItem($this->order->id, $purchasableId, $options);
+    public function afterSave(): void
+    {
+        foreach ($this->getData()->add as $item)
+        {
+            $purchasableId = $item->id;
+            $note = '';
+            $options = [];
+            $qty = $item->qty;
 
-			// New line items already have a qty of one.
-			if ($lineItem->id) {
-				$lineItem->qty += $qty;
-			} else {
-				$lineItem->qty = $qty;
-			}
+            $lineItem = Commerce::getInstance()->getLineItems()->resolveLineItem($this->order->id, $purchasableId, $options);
 
-			$lineItem->note = $note;
-			//$this->order->isCompleted = false;
-			$this->order->addLineItem($lineItem);
+            // New line items already have a qty of one.
+            if ($lineItem->id) {
+                $lineItem->qty += $qty;
+            } else {
+                $lineItem->qty = $qty;
+            }
 
-		}
-	}
+            $lineItem->note = $note;
+            //$this->order->isCompleted = false;
+            $this->order->addLineItem($lineItem);
 
+        }
+    }
 
-
-    /**
-     * @inheritdoc
-     */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['orderId', 'userId', 'comments', 'type', 'data'], 'required'],

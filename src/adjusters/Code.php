@@ -4,13 +4,13 @@
  *
  * Adds promotions
  *
- * @link      https://kurious.agency
- * @copyright Copyright (c) 2018 Kurious Agency
+ * @link      https://webdna.co.uk
+ * @copyright Copyright (c) 2018 webdna
  */
 
-namespace kuriousagency\commerce\ordernotes\adjusters;
+namespace webdna\commerce\ordernotes\adjusters;
 
-use kuriousagency\commerce\ordernotes\OrderNotes;
+use webdna\commerce\ordernotes\OrderNotes;
 
 use Craft;
 use craft\base\Component;
@@ -38,32 +38,32 @@ class Code extends Component implements AdjusterInterface
     /**
      * The discount adjustment type.
      */
-	const ADJUSTMENT_TYPE = 'discount';
-	
-	const EVENT_AFTER_DISCOUNT_ADJUSTMENTS_CREATED = 'afterDiscountAdjustmentsCreated';
+    const ADJUSTMENT_TYPE = 'discount';
+
+    const EVENT_AFTER_DISCOUNT_ADJUSTMENTS_CREATED = 'afterDiscountAdjustmentsCreated';
 
 
     // Properties
     // =========================================================================
-	/**
+    /**
      * @var Order
      */
-    private $_order;
+    private Order $_order;
 
     /**
-     * @var
+     * @var DiscountModel
      */
-    private $_discount;
+    private DiscountModel $_discount;
 
-    /*
-     * @var
+    /**
+     * @var float
      */
-    private $_discountTotal = 0;
+    private float $_discountTotal = 0;
 
     /**
      * @var bool
      */
-    private $_spreadBaseOrderDiscountsToLineItems = false;
+    private bool $_spreadBaseOrderDiscountsToLineItems = false;
 
 
     // Public Methods
@@ -80,36 +80,36 @@ class Code extends Component implements AdjusterInterface
         $availableDiscounts = [];
         $codes = [];
         $oldCouponCode = $order->couponCode;
-		foreach (OrderNotes::$plugin->notes->getNotesByOrderId($order->id) as $note)
-		{
-			$handle = (new \ReflectionClass($note->type))->getShortName();
-			if ($handle == 'Code') {
-				$codes[] = $note->getData()->code;
-			}
-		}
+        foreach (OrderNotes::$plugin->notes->getNotesByOrderId($order->id) as $note)
+        {
+            $handle = (new \ReflectionClass($note->type))->getShortName();
+            if ($handle == 'Code') {
+                $codes[] = $note->getData()->code;
+            }
+        }
 
-		if (count($codes)) {
+        if (count($codes)) {
 
-			$discounts = Commerce::getInstance()->getDiscounts()->getAllActiveDiscounts();
+            $discounts = Commerce::getInstance()->getDiscounts()->getAllActiveDiscounts();
 
-			foreach ($codes as $code)
-			{
+            foreach ($codes as $code)
+            {
                 $order->couponCode = $code;
-				foreach ($discounts as $discount) {
-                    
-					if ($code && (strcasecmp($code, $discount->code) == 0) && Commerce::getInstance()->getDiscounts()->matchOrder($order,$discount)) {
-                        $availableDiscounts[] = $discount;      
-					}
-				}
-				foreach ($availableDiscounts as $discount) {
-                    $newAdjustments = $this->_getAdjustments($discount);
-					if ($newAdjustments) {
-						array_push($adjustments, ...$newAdjustments);
+                foreach ($discounts as $discount) {
 
-						if ($discount->stopProcessing) {
-							break;
-						}
-					}
+                    if ($code && (strcasecmp($code, $discount->code) == 0) && Commerce::getInstance()->getDiscounts()->matchOrder($order,$discount)) {
+                        $availableDiscounts[] = $discount;
+                    }
+                }
+                foreach ($availableDiscounts as $discount) {
+                    $newAdjustments = $this->_getAdjustments($discount);
+                    if ($newAdjustments) {
+                        array_push($adjustments, ...$newAdjustments);
+
+                        if ($discount->stopProcessing) {
+                            break;
+                        }
+                    }
                 }
 
                 if ($this->_spreadBaseOrderDiscountsToLineItems) {
@@ -164,13 +164,13 @@ class Code extends Component implements AdjusterInterface
                         }
                     }
                 }
-			}
-		}
+            }
+        }
         $order->couponCode = $oldCouponCode;
         return $adjustments;
-	}
-	
-	// Private Methods
+    }
+
+    // Private Methods
     // =========================================================================
 
     /**
@@ -197,7 +197,7 @@ class Code extends Component implements AdjusterInterface
      * @param DiscountModel $discount
      * @return OrderAdjustment[]|false
      */
-    private function _getAdjustments(DiscountModel $discount)
+    private function _getAdjustments(DiscountModel $discount): array|false
     {
         $adjustments = [];
 
@@ -311,7 +311,7 @@ class Code extends Component implements AdjusterInterface
      * @param DiscountModel $discount
      * @return float|int
      */
-    private function _getBaseDiscountAmount(DiscountModel $discount)
+    private function _getBaseDiscountAmount(DiscountModel $discount): float
     {
         if ($discount->baseDiscountType == DiscountRecord::BASE_DISCOUNT_TYPE_VALUE) {
             return $discount->baseDiscount;
